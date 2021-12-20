@@ -2,8 +2,8 @@
 
 class HomeController < ApplicationController
   def show
-    @current_temp = CurrentTemp.read_fahrenheit
-    render plain: "hello world! current temp is #{@current_temp}"
+    reading = TempReading.log!
+    render plain: "hello world! current temp is #{reading.tempf}"
   rescue StandardError => e
     Rails.logger.error(e)
     render plain: "Error: #{e}"
