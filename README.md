@@ -18,13 +18,22 @@ curl -sSL https://get.rvm.io | bash -s stable --rails
 # screen -r # to reconnect
 ```
 
-Seed some data
+Seed some data:
 ```
 bin/rails db:migrate RAILS_ENV=development
-TempReading.create(tempf: 50.0)
+TempReading.create(tempf: 50.0) # create at least one so that logic depending on comparing to previous doesn't break
 TempReading.create(tempf: 60.0)
-
 ```
+
+Control cron jobs for recording temp info:
+```
+# Turn them on
+bundle exec whenever --update-crontab --set environment='development' # see config/schedule.rb
+
+# Turn them off
+bundle exec whenever --clear-crontab
+```
+
 
 Then to start:
 ```

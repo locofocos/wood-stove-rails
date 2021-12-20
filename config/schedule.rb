@@ -18,3 +18,12 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
+
+
+# After updating:
+# bundle exec whenever --update-crontab --set environment='development'
+
+every 1.minute do
+  rake 'temp_reading:log'
+end
+
