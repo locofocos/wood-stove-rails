@@ -1,4 +1,9 @@
+# frozen_string_literal: true
+
 class TempReading < ApplicationRecord
+  def pretty_timestamp
+    created_at.in_time_zone('US/Central').strftime('%I:%M %p %b %d')
+  end
 
   # Rad the current temperature from the sensor and create a new TempReading record with the value
   def self.log
