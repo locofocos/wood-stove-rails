@@ -11,8 +11,8 @@
   <tbody>
   <% @temp_readings.each do |temp_reading| %>
     <tr>
-      <td>temp_reading.tempf</td>
-      <td>time_ago_in_words(temp_reading.created_at)</td>
+      <td><%= temp_reading.tempf %></td>
+      <td><%= time_ago_in_words(temp_reading.created_at) %></td>
     </tr>
   <% end %>
   </tbody>
