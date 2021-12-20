@@ -1,0 +1,2 @@
+class TempReading < ApplicationRecord
+end

@@ -1,0 +1,2 @@
+class TempMonitor < ApplicationRecord
+end
