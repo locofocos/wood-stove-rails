@@ -30,7 +30,9 @@ TempMonitor.create!(upper_limitf: 500, lower_limitf: 60)
 
 Set PUSHBULLET_ACCESS_TOKEN env variable, grab one from https://www.pushbullet.com/#settings. Needed for notifications
 ```
-TODO
+sudo vi /etc/profile
+export PUSHBULLET_ACCESS_TOKEN=asdf
+:wq
 ```
 
 
