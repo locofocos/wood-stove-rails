@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  resource :temp_readings, only: [:index]
-  resource :temp_monitors, only: [:index, :show, :edit, :update]
+  resource :temp_reading, only: [:index]
+  resource :temp_monitor, only: [:index, :show, :edit, :update]
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
