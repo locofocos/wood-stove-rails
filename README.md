@@ -54,9 +54,7 @@ Control monitors (still needs a rails ui to be built) inside `rails c`:
 TempMonitor.last.update!(upper_limitf: 500, lower_limitf: 60)
 
 # Disable monitors (maybe you want to keep cron jobs recording data but stop notifications):
-TempMonitor.each do |o|
-  o.update!(upper_limitf: nil, lower_limitf: nil)
-end
+TempMonitor.last.update!(upper_limitf: nil, lower_limitf: nil)
 ```
 
 
