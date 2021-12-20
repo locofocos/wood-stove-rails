@@ -13,7 +13,7 @@
   <% @temp_readings.each do |temp_reading| %>
     <tr>
       <td><%= number_to_human(temp_reading.tempf) %></td>
-      <td><%= time_ago_in_words(temp_reading.created_at) %></td>
+      <td><%= time_ago_in_words(temp_reading.created_at) + ' ago' %></td>
       <td><%= temp_reading.pretty_timestamp %></td>
     </tr>
   <% end %>
