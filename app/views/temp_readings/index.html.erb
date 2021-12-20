@@ -1,2 +1,19 @@
-<h1>TempReadings#index</h1>
-<p>Find me in app/views/temp_readings/index.html.erb</p>
+<h1>Temperature Readings</h1>
+
+
+<table>
+  <thead>
+    <tr>
+      <th>Temperature (F)</th>
+      <th>Time</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @temp_readings.each do |temp_reading| %>
+    <tr>
+      <td>temp_reading.tempf</td>
+      <td>time_ago_in_words(temp_reading.created_at)</td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
