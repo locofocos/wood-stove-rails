@@ -22,8 +22,6 @@ Seed some data:
 ```
 bin/rails db:migrate RAILS_ENV=development
 TempReading.create(tempf: 50.0) # create at least one so that logic depending on comparing to previous doesn't break
-TempReading.create(tempf: 60.0)
-
 
 TempMonitor.create!(upper_limitf: 500, lower_limitf: 60)
 ```
@@ -35,8 +33,13 @@ export PUSHBULLET_ACCESS_TOKEN=asdf
 :wq
 ```
 
+Start the rails server:
+```
+bundle install
+rails s -b 192.168.1.188
+```
 
-Control cron jobs for recording temp info:
+Control cron jobs for recording temp info (and processing monitors/notifications):
 ```
 # Turn them on
 bundle exec whenever --update-crontab --set environment='development' # see config/schedule.rb
@@ -45,11 +48,15 @@ bundle exec whenever --update-crontab --set environment='development' # see conf
 bundle exec whenever --clear-crontab
 ```
 
-
-Then to start:
+Control monitors (still needs a rails ui to be built) inside `rails c`:
 ```
-bundle install
-rails s -b 192.168.1.188
+# Update monitor thresholds
+TempMonitor.last.update!(upper_limitf: 500, lower_limitf: 60)
+
+# Disable monitors (maybe you want to keep cron jobs recording data but stop notifications):
+TempMonitor.each do |o|
+  o.update!(upper_limitf: nil, lower_limitf: nil)
+end
 ```
 
 
