@@ -18,10 +18,18 @@ curl -sSL https://get.rvm.io | bash -s stable --rails
 # screen -r # to reconnect
 ```
 
+Seed some data
+```
+bin/rails db:migrate RAILS_ENV=development
+TempReading.create(tempf: 50.0)
+TempReading.create(tempf: 60.0)
+
+```
+
 Then to start:
 ```
 bundle install
-rails s
+rails s -b 192.168.1.188
 ```
 
 
