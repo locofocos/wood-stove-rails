@@ -3,8 +3,10 @@
 class CurrentTemp
 
   def self.read_fahrenheit
-    raw = `python lib/read_temp.py`
-    Rails.logger.info("read raw temp: #{raw}")
-    raw.strip.to_f
+    start_time = Time.now
+    raw = `python lib/read_temp.py`.strip
+    end_time = Time.now
+    Rails.logger.info("read raw temp: #{raw}, took #{end_time - start_time} seconds")
+    raw.to_f
   end
 end
