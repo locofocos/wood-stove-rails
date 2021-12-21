@@ -25,7 +25,7 @@ class CurrentTemp
 
   # raw is the raw sensor value, which can be off due to the positioning of the sensor.
   # Adjust the data before persisting so that everything else in the app is simpler (only 1 set of temperature values).
-  def adjusted_tempf(raw)
+  def self.adjusted_tempf(raw)
     lower = TEMP_ADJUSTMENTS.select { |adj| adj[:tempf] < raw }.max_by { |adj| adj[:tempf] }
     upper = TEMP_ADJUSTMENTS.select { |adj| adj[:tempf] > raw }.min_by { |adj| adj[:tempf] }
 
