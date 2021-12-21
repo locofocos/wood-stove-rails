@@ -5,7 +5,6 @@
   <thead>
     <tr>
       <th>Temperature (F)</th>
-      <th>Adjusted Temp (F)</th>
       <th>Time</th>
       <th>Raw time</th>
     </tr>
@@ -14,7 +13,6 @@
   <% @temp_readings.each do |temp_reading| %>
     <tr>
       <td><%= number_to_human(temp_reading.tempf) %></td>
-      <td><%= number_to_human(temp_reading.adjusted_tempf) %></td>
       <td><%= time_ago_in_words(temp_reading.created_at) + ' ago' %></td>
       <td><%= temp_reading.pretty_timestamp %></td>
     </tr>
