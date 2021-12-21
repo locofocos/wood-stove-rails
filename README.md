@@ -37,6 +37,10 @@ Start the rails server:
 ```
 bundle install
 rails s -b 192.168.1.188
+
+# or in the background
+screen rails s -b 192.168.1.188
+# then ctrl+A   D
 ```
 
 Control cron jobs for recording temp info (and processing monitors/notifications):
