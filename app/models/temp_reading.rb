@@ -2,7 +2,7 @@
 
 class TempReading < ApplicationRecord
 
-  attr_acccessor :raw_tempf # generally only set when the object is first created
+  attr_accessor :raw_tempf # generally only set when the object is first created
 
   def pretty_timestamp
     created_at.in_time_zone('US/Central').strftime('%I:%M %p %b %d')
