@@ -1,0 +1,17 @@
+<%= form_with(model: temp_monitor) do |form| %>
+  <% if temp_monitor.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(temp_monitor.errors.count, "error") %> prohibited this temp_monitor from being saved:</h2>
+
+      <ul>
+        <% temp_monitor.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
