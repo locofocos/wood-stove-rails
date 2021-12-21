@@ -27,7 +27,7 @@ class CurrentTemp
   # raw is the raw sensor value, which can be off due to the positioning of the sensor.
   # Adjust the data before persisting so that everything else in the app is simpler (only 1 set of temperature values).
   def self.adjusted_tempf(raw)
-    raw * 1.7 - 70 # let's try a constant factor. Probably most likely.
+    raw * 1.87 - 70 # let's try a constant factor. Probably most likely.
   end
 
   # def self.adjusted_tempf(raw)
