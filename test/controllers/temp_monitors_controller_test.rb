@@ -17,7 +17,7 @@ class TempMonitorsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create temp_monitor" do
     assert_difference("TempMonitor.count") do
-      post temp_monitors_url, params: { temp_monitor: {  } }
+      post temp_monitors_url, params: { temp_monitor: { lower_limitf: @temp_monitor.lower_limitf, upper_limitf: @temp_monitor.upper_limitf } }
     end
 
     assert_redirected_to temp_monitor_url(TempMonitor.last)
@@ -34,7 +34,7 @@ class TempMonitorsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update temp_monitor" do
-    patch temp_monitor_url(@temp_monitor), params: { temp_monitor: {  } }
+    patch temp_monitor_url(@temp_monitor), params: { temp_monitor: { lower_limitf: @temp_monitor.lower_limitf, upper_limitf: @temp_monitor.upper_limitf } }
     assert_redirected_to temp_monitor_url(@temp_monitor)
   end
 

@@ -12,6 +12,16 @@
   <% end %>
 
   <div>
+    <%= form.label :upper_limitf, style: "display: block" %>
+    <%= form.text_field :upper_limitf %>
+  </div>
+
+  <div>
+    <%= form.label :lower_limitf, style: "display: block" %>
+    <%= form.text_field :lower_limitf %>
+  </div>
+
+  <div>
     <%= form.submit %>
   </div>
 <% end %>

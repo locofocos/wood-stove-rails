@@ -14,6 +14,8 @@ class TempMonitorsTest < ApplicationSystemTestCase
     visit temp_monitors_url
     click_on "New temp monitor"
 
+    fill_in "Lower limitf", with: @temp_monitor.lower_limitf
+    fill_in "Upper limitf", with: @temp_monitor.upper_limitf
     click_on "Create Temp monitor"
 
     assert_text "Temp monitor was successfully created"
@@ -24,6 +26,8 @@ class TempMonitorsTest < ApplicationSystemTestCase
     visit temp_monitor_url(@temp_monitor)
     click_on "Edit this temp monitor", match: :first
 
+    fill_in "Lower limitf", with: @temp_monitor.lower_limitf
+    fill_in "Upper limitf", with: @temp_monitor.upper_limitf
     click_on "Update Temp monitor"
 
     assert_text "Temp monitor was successfully updated"

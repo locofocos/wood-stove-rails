@@ -65,6 +65,6 @@ class TempMonitorsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def temp_monitor_params
-      params.fetch(:temp_monitor, {})
+      params.require(:temp_monitor).permit(:upper_limitf, :lower_limitf)
     end
 end
