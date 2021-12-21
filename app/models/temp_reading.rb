@@ -2,6 +2,8 @@
 
 class TempReading < ApplicationRecord
 
+  attr_acccessor :raw_tempf # generally only set when the object is first created
+
   def pretty_timestamp
     created_at.in_time_zone('US/Central').strftime('%I:%M %p %b %d')
   end
@@ -18,9 +20,10 @@ class TempReading < ApplicationRecord
   # Process temperature monitors.
   # probably raises some parse error if reading fails
   def self.log!
-    current_temp = CurrentTemp.read_fahrenheit
-    record = TempReading.create!(tempf: current_temp)
-    Rails.logger.info("Saved temperature: #{current_temp}")
+    raw_tempf = CurrentTemp.read_fahrenheit_raw
+    adjusted = CurrentTemp.adjusted_tempf(raw_tempf)
+    record = TempReading.create!(tempf: adjusted, raw_tempf: raw_tempf)
+    Rails.logger.info("Saved temperature: #{record.tempf}")
 
     TempMonitor.process_all
 
