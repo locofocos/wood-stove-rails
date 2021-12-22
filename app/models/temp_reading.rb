@@ -14,6 +14,12 @@ class TempReading < ApplicationRecord
     Rails.logger.error("Unable to log current temperature: #{e}")
   end
 
+  # Adjust for the sensor not picking up all the heat.
+  # But NOT adjusted to account for the rate of change.
+  def non_rate_adjusted_tempf
+    (raw_tempf * 2.1) - 70
+  end
+
   # Read the current temperature from the sensor and create a new TempReading record with the value.
   # Process temperature monitors.
   # probably raises some parse error if reading fails
