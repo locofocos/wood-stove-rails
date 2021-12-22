@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_20_174204) do
+ActiveRecord::Schema.define(version: 2021_12_22_065353) do
 
   create_table "temp_monitors", force: :cascade do |t|
     t.float "upper_limitf"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 2021_12_20_174204) do
     t.float "tempf"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.float "raw_tempf"
   end
 
 end
