@@ -17,7 +17,11 @@ class TempReading < ApplicationRecord
   # Adjust for the sensor not picking up all the heat.
   # But NOT adjusted to account for the rate of change.
   def non_rate_adjusted_tempf
-    (raw_tempf * 2.1) - 70
+    if raw_tempf
+      (raw_tempf * 2.1) - 70
+    else
+      tempf
+    end
   end
 
   # Read the current temperature from the sensor and create a new TempReading record with the value.
