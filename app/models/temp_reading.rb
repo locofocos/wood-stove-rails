@@ -22,7 +22,7 @@ class TempReading < ApplicationRecord
 
     # 2.1 and 70 - derived from trial and error with real values. Designed to keep it correct at room temperature.
     # Basically account for the sensor not picking up all the heat, for whatever reason.
-    adjusted_tempf = (raw * 2.1) - 70
+    adjusted_tempf = (raw_tempf * 2.1) - 70
 
     # Attempt to calculate the actual stove temperature based on the current rate of temperature change.
     # Temp rising much faster right now -> the true temp is much higher than the current reading.
