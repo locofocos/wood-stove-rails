@@ -30,6 +30,14 @@ class CurrentTemp
     raw * 1.87 - 70 # let's try a constant factor. Probably most likely.
   end
 
+  # I persisted the adjusted_tempf. But now I'd like the original value for some analysis.
+  def self.raw_tempf(adjusted_tempf)
+    # adjusted_tempf = raw * 1.87 - 70
+    # adjusted_tempf + 70 = raw * 1.87
+    # (adjusted_tempf + 70) / 1.87 = raw
+    (adjusted_tempf + 70) / 1.87
+  end
+
   # def self.adjusted_tempf(raw)
   #   lower = TEMP_ADJUSTMENTS.select { |adj| adj[:tempf] < raw }.max_by { |adj| adj[:tempf] }
   #   upper = TEMP_ADJUSTMENTS.select { |adj| adj[:tempf] > raw }.min_by { |adj| adj[:tempf] }
