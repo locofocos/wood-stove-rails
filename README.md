@@ -21,7 +21,7 @@ curl -sSL https://get.rvm.io | bash -s stable --rails
 Seed some data:
 ```
 bin/rails db:migrate RAILS_ENV=development
-TempReading.create(tempf: 50.0) # create at least one so that logic depending on comparing to previous doesn't break
+TempReading.create(tempf: 50.0) # create at least one so that TempMonitor logic depending on comparing to previous doesn't break
 
 TempMonitor.create!(upper_limitf: 500, lower_limitf: 60)
 ```

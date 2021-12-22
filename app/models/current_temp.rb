@@ -11,11 +11,6 @@ class CurrentTemp
   #   { tempf: 265 + (265 - 70), adjusted_tempf: 400 + (400 - 70) } # poor man's extrapolation. Replace with better observed values.
   # ].freeze
 
-  def self.read_fahrenheit
-    raw = read_fahrenheit_raw
-    adjusted_tempf(raw)
-  end
-
   def self.read_fahrenheit_raw
     start_time = Time.now
     raw = `python lib/read_temp.py`.strip
@@ -24,19 +19,11 @@ class CurrentTemp
     raw.to_f
   end
 
-  # raw is the raw sensor value, which can be off due to the positioning of the sensor.
-  # Adjust the data before persisting so that everything else in the app is simpler (only 1 set of temperature values).
-  def self.adjusted_tempf(raw)
-    raw * 1.87 - 70 # let's try a constant factor. Probably most likely.
-  end
-
-  # I persisted the adjusted_tempf. But now I'd like the original value for some analysis.
-  def self.raw_tempf(adjusted_tempf)
-    # adjusted_tempf = raw * 1.87 - 70
-    # adjusted_tempf + 70 = raw * 1.87
-    # (adjusted_tempf + 70) / 1.87 = raw
-    (adjusted_tempf + 70) / 1.87
-  end
+  # # raw is the raw sensor value, which can be off due to the positioning of the sensor.
+  # # Adjust the data before persisting so that everything else in the app is simpler (only 1 set of temperature values).
+  # def self.adjusted_tempf(raw)
+  #   raw * 1.87 - 70 # let's try a constant factor. Probably most likely.
+  # end
 
   # def self.adjusted_tempf(raw)
   #   lower = TEMP_ADJUSTMENTS.select { |adj| adj[:tempf] < raw }.max_by { |adj| adj[:tempf] }
