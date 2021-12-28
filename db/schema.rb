@@ -10,11 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_28_014613) do
+ActiveRecord::Schema.define(version: 2021_12_28_021504) do
 
   create_table "settings", force: :cascade do |t|
-    t.integer "static_temp_factor"
-    t.integer "dynamic_temp_factor"
+    t.float "static_temp_factor"
+    t.float "dynamic_temp_factor"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

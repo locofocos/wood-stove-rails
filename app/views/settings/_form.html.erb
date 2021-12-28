@@ -12,12 +12,12 @@
   <% end %>
 
   <div>
-    <%= form.label :static_temp_factor, style: "display: block" %>
+    <%= form.label "Static temp factor (fix temperature reading off when the temp is staying steady)", style: "display: block" %>
     <%= form.number_field :static_temp_factor %>
   </div>
 
   <div>
-    <%= form.label :dynamic_temp_factor, style: "display: block" %>
+    <%= form.label "Dynamic temp factor (fix temperature reading when the temp is changing quickly)", style: "display: block" %>
     <%= form.number_field :dynamic_temp_factor %>
   </div>
 
