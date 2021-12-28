@@ -46,11 +46,11 @@ class SettingsController < ApplicationController
     respond_to do |format|
       Settings.transaction do
         if @settings.update(settings_params)
-          TempReading.where(created_at: 30.minutes.ago...Time.now).each(&:derive_temps!)
+          TempReading.where(created_at: 60.minutes.ago...Time.now).each(&:derive_temps!)
 
           format.html do
             redirect_to temp_readings_path,
-                        notice: 'Settings was successfully updated. Last 30 minutes of data have been recalibrated using these values'
+                        notice: 'Settings was successfully updated. Last 60 minutes of data have been recalibrated using these values'
           end
           format.json { render :show, status: :ok, location: @settings }
         else
