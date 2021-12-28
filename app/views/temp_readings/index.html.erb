@@ -10,13 +10,8 @@
 <p style="color: green"><%= notice %></p>
 
 <div style="padding: 24px">
-  <%= form_with url: '/confirmed_readings', method: :post do |form| %>
-    <%= form.label :confirmed_tempf, "Confirmed current temp (F)" %>
-    <%= form.number_field :confirmed_tempf, step: 0.1 %>
-    <%= form.submit "Save" %>
-  <% end %>
+  <%= render 'confirmed_readings/new_form' %>
 </div>
-
 
 <table>
   <thead>

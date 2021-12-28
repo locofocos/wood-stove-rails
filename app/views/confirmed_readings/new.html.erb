@@ -1,7 +1,3 @@
 
-<%= form_with url: '/confirmed_readings', method: :post do |form| %>
-  <%= form.label :confirmed_tempf, "Confirmed current temp (F)" %>
-  <%= form.number_field :confirmed_tempf, step: 1.0 %>
-  <%= form.submit "Save" %>
-<% end %>
+<%= render 'confirmed_readings/new_form' %>
 
