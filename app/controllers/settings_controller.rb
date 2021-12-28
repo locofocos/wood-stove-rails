@@ -49,7 +49,7 @@ class SettingsController < ApplicationController
           TempReading.where(created_at: 30.minutes.ago...Time.now).each(&:derive_temps!)
 
           format.html do
-            redirect_to settings_url(@settings),
+            redirect_to temp_readings_path,
                         notice: 'Settings was successfully updated. Last 30 minutes of data have been recalibrated using these values'
           end
           format.json { render :show, status: :ok, location: @settings }
