@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :settings
   resources :temp_readings, only: [:index]
   resources :temp_monitors
 
