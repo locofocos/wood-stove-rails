@@ -18,7 +18,8 @@ class TempReading < ApplicationRecord
   # But NOT adjusted to account for the rate of change.
   def non_rate_adjusted_tempf
     if raw_tempf
-      (raw_tempf * 2.1) - 70
+      static_temp_factor = Settings.first&.static_temp_factor || 2.1
+      (raw_tempf * static_temp_factor) - 70
     else
       tempf
     end
