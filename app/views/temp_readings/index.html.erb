@@ -2,14 +2,28 @@
 
 <%= line_chart [
                    {name: 'Temp (F)', data: @temp_readings.pluck(:created_at, :tempf)},
-                   {name: 'Raw Temp (F)', data: @temp_readings.pluck(:created_at, :raw_tempf)}
+                   {name: 'Raw Temp (F)', data: @temp_readings.pluck(:created_at, :raw_tempf)},
+                   {name: 'Confirmed Temp (F)', data: @temp_readings.pluck(:created_at, :confirmed_tempf)}
+
                ] %>
+
+<p style="color: green"><%= notice %></p>
+
+<div style="padding: 24px">
+  <%= form_with url: '/confirmed_readings', method: :post do |form| %>
+    <%= form.label :confirmed_tempf, "Confirmed current temp (F)" %>
+    <%= form.number_field :confirmed_tempf, step: 1.0 %>
+    <%= form.submit "Save" %>
+  <% end %>
+</div>
+
 
 <table>
   <thead>
     <tr>
       <th>Temp (F)</th>
-      <th>Temp 2 (F)</th>
+      <th>Temp (F) Non-<br>rate-adjusted</th>
+      <th>Temp (F)<br>Confirmed</th>
       <th>Time</th>
       <th>Raw time</th>
     </tr>
@@ -19,6 +33,7 @@
     <tr>
       <td><%= number_to_human(temp_reading.tempf) %></td>
       <td><%= number_to_human(temp_reading.non_rate_adjusted_tempf) %></td>
+      <td><%= number_to_human(temp_reading.confirmed_tempf) %></td>
       <td><%= time_ago_in_words(temp_reading.created_at) + ' ago' %></td>
       <td><%= temp_reading.pretty_timestamp %></td>
     </tr>
@@ -27,5 +42,5 @@
 </table>
 
 <p>
-  "Temp 2" = not adjusted to account for the rate of temperature change
+  "Temp Non-rate-adjusted" = not adjusted to account for the rate of temperature change
 </p>

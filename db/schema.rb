@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_28_021504) do
+ActiveRecord::Schema.define(version: 2021_12_28_023352) do
 
   create_table "settings", force: :cascade do |t|
     t.float "static_temp_factor"
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 2021_12_28_021504) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.float "raw_tempf"
+    t.float "confirmed_tempf"
   end
 
 end
