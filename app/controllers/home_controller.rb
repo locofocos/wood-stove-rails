@@ -2,7 +2,7 @@
 
 class HomeController < ApplicationController
   def show
-    reading = TempReading.log!
+    reading = TempReading.last
     @current_tempf = reading.tempf
     @current_raw_tempf = reading.raw_tempf
   rescue StandardError => e
