@@ -4,11 +4,15 @@
 
 <div id="temp_monitors">
   <% @temp_monitors.each do |temp_monitor| %>
-    <%= render temp_monitor %>
-    <p>
-      <%= link_to "Show this temp monitor", temp_monitor %>
-    </p>
+    <div style="border: solid 1px gray; padding: 8px">
+      <%= render temp_monitor %>
+      <p>
+        <%= link_to "Show this temp monitor", temp_monitor %>
+      </p>
+    </div>
+    <br/>
   <% end %>
 </div>
 
 <%= link_to "New temp monitor", new_temp_monitor_path %>
+<div style="margin-bottom: 8px"></div>

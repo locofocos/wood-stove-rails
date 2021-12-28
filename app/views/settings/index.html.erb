@@ -1,14 +1,7 @@
+<h1>Editing settings</h1>
+
 <p style="color: green"><%= notice %></p>
 
-<h1>Settings</h1>
+<%= render "form", settings: @settings %>
 
-<div id="settings">
-  <% @settings.each do |settings| %>
-    <%= render settings %>
-    <p>
-      <%= link_to "Show this settings", settings %>
-    </p>
-  <% end %>
-</div>
-
-<%= link_to "New settings", new_settings_path %>
+<br>

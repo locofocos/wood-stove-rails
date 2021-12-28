@@ -51,14 +51,16 @@ class TempReading < ApplicationRecord
   def derive_temps
     # 2.1 and 70 - derived from trial and error with real values. Designed to keep it correct at room temperature.
     # Basically account for the sensor not picking up all the heat, for whatever reason.
-    adjusted_tempf = (raw_tempf * 2.1) - 70
+    static_temp_factor = Settings.first&.static_temp_factor || 2.1
+    adjusted_tempf = (raw_tempf * static_temp_factor) - 70
 
     # Attempt to calculate the actual stove temperature based on the current rate of temperature change.
     # Temp rising much faster right now -> the true temp is much higher than the current reading.
     recent_reading = TempReading.find_by(created_at: (created_at - 2.5.minutes)...(created_at - 1.5.minutes))
 
     if recent_reading && recent_reading.raw_tempf
-      adjustment_delta = (raw_tempf - recent_reading.raw_tempf) * 16 # 16 is derived from trial and error
+      dynamic_temp_factor = Settings.first&.dynamic_temp_factor || 16 # 16 is derived from trial and error
+      adjustment_delta = (raw_tempf - recent_reading.raw_tempf) * dynamic_temp_factor
 
       adjusted_tempf += adjustment_delta
     end
