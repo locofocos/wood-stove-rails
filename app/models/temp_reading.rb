@@ -30,13 +30,32 @@ class TempReading < ApplicationRecord
   def self.log!
     raw_tempf = CurrentTemp.read_fahrenheit_raw
 
+    record = TempReading.create!(raw_tempf: raw_tempf)
+    record.derive_temps
+    record.save!
+    Rails.logger.info("Saved temperature: #{record.tempf} (raw: #{record.raw_tempf})")
+
+    TempMonitor.process_all
+
+    record
+  end
+
+  def derive_temps!
+    derive_temps
+    save!
+  end
+
+  # Derive temps which are based on raw_tempf (and possibly other TempReadings).
+  # Might call this after initial creation, when you realize that your constant factors
+  # in temp algorithms need to be adjusted (like when these readings don't align with a physical thermometer).
+  def derive_temps
     # 2.1 and 70 - derived from trial and error with real values. Designed to keep it correct at room temperature.
     # Basically account for the sensor not picking up all the heat, for whatever reason.
     adjusted_tempf = (raw_tempf * 2.1) - 70
 
     # Attempt to calculate the actual stove temperature based on the current rate of temperature change.
     # Temp rising much faster right now -> the true temp is much higher than the current reading.
-    recent_reading = TempReading.find_by(created_at: 2.5.minutes.ago...1.5.minutes.ago)
+    recent_reading = TempReading.find_by(created_at: (created_at - 2.5.minutes)...(created_at - 1.5.minutes))
 
     if recent_reading && recent_reading.raw_tempf
       adjustment_delta = (raw_tempf - recent_reading.raw_tempf) * 16 # 16 is derived from trial and error
@@ -44,11 +63,6 @@ class TempReading < ApplicationRecord
       adjusted_tempf += adjustment_delta
     end
 
-    record = TempReading.create!(tempf: adjusted_tempf, raw_tempf: raw_tempf)
-    Rails.logger.info("Saved temperature: #{record.tempf} (raw: #{record.raw_tempf})")
-
-    TempMonitor.process_all
-
-    record
+    assign_attributes(tempf: adjusted_tempf)
   end
 end
