@@ -5,7 +5,7 @@
                    {name: 'Raw Temp (F)', data: @temp_readings.pluck(:created_at, :raw_tempf)},
                    {name: 'Confirmed Temp (F)', data: @temp_readings.pluck(:created_at, :confirmed_tempf)}
 
-               ] %>
+               ], min: nil, max: nil %>
 
 <p style="color: green"><%= notice %></p>
 
