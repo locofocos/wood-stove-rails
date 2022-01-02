@@ -4,9 +4,13 @@ class RelaysController < ApplicationController
   end
 
   def create
-    puts "params is: #{params}"
+    raise "power param missing" unless params[:power].present?
 
-    #TODO set relay values
+    if params[:power] == 'on'
+      RelayService.on
+    else
+      RelayService.off
+    end
 
     respond_to do |format|
       format.html { redirect_to relays_url, notice: "Relay was successfully toggled" }
