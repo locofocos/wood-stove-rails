@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :temp_readings, only: [:index]
   resources :temp_monitors
   resources :confirmed_readings, only: [:new, :create]
+  resources :relays, only: [:new, :create]
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

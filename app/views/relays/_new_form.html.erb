@@ -1,0 +1,17 @@
+<p style="color: gray"><%= notice %></p>
+
+
+<strong>Fan control:</strong>
+
+<div style="display: inline-block">
+  <%= form_with url: '/relays', method: :post do |form| %>
+    <%= form.text_field :power, value: 'on', hidden: true %>
+    <%= form.submit "Turn on", style: 'background: green; color: white' %>
+  <% end %>
+</div>
+<div style="display: inline-block">
+  <%= form_with url: '/relays', method: :post do |form| %>
+    <%= form.text_field :power, value: 'off', hidden: true %>
+    <%= form.submit "Turn off", style: 'background: red; color: white' %>
+  <% end %>
+</div>
