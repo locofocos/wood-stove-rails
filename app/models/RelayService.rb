@@ -23,6 +23,7 @@ class RelayService
     Rails.logger.error("Error occurred while toggling relay: #{e}")
     sleep(IO_SLEEP)
     `echo #{GPIO_PIN_NUMBER} > /sys/class/gpio/unexport`
+    raise e
   end
 
   def self.off
@@ -40,5 +41,6 @@ class RelayService
     Rails.logger.error("Error occurred while toggling relay: #{e}")
     sleep(IO_SLEEP)
     `echo #{GPIO_PIN_NUMBER} > /sys/class/gpio/unexport`
+    raise e
   end
 end

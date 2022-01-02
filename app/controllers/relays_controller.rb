@@ -13,7 +13,7 @@ class RelaysController < ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to relays_url, notice: "Relay was successfully toggled" }
+      format.html { redirect_to relays_url, notice: "Fan was successfully toggled" }
     end
   end
 end
