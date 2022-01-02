@@ -8,6 +8,12 @@ class TempMonitor < ApplicationRecord
   end
 
   def process
+    fired_very_recently = last_fired_at && last_fired_at > 10.minutes.ago
+    if fired_very_recently
+      Rails.logger.info("Skipping temp monitor #{id} because it fired very recently")
+      return
+    end
+
     second_to_last = TempReading.second_to_last
     last = TempReading.last
 
@@ -22,6 +28,7 @@ class TempMonitor < ApplicationRecord
         Rails.logger.info(strip_emojis("#{title} - #{body}"))
 
         send_push_notification!(title, body)
+        update!(last_fired_at: Time.now)
       end
     end
 
@@ -34,6 +41,7 @@ class TempMonitor < ApplicationRecord
         Rails.logger.info(strip_emojis("#{title} - #{body}"))
 
         send_push_notification!(title, body)
+        update!(last_fired_at: Time.now)
       end
     end
   end
