@@ -57,15 +57,36 @@ class TempReading < ApplicationRecord
 
     # Attempt to calculate the actual stove temperature based on the current rate of temperature change.
     # Temp rising much faster right now -> the true temp is much higher than the current reading.
-    recent_reading = TempReading.find_by(created_at: (created_at - 2.5.minutes)...(created_at - 1.5.minutes))
 
-    if recent_reading && recent_reading.raw_tempf
+    older_reading = TempReading.find_by(created_at: (created_at - 2.5.minutes)...(created_at - 1.5.minutes))
+    old_reading = TempReading.find_by(created_at: (created_at - 1.5.minutes)...(created_at - 0.5.minutes))
+
+    if older_reading&.raw_tempf && old_reading&.raw_tempf
       dynamic_temp_factor = Settings.first&.dynamic_temp_factor || 16 # 16 is derived from trial and error
-      adjustment_delta = (raw_tempf - recent_reading.raw_tempf) * dynamic_temp_factor
+
+      adjustment_delta1 = calc_adjustment_delta(older_reading, old_reading, dynamic_temp_factor)
+      adjustment_delta2 = calc_adjustment_delta(old_reading, self, dynamic_temp_factor)
+      adjustment_delta3 = calc_adjustment_delta(older_reading, self, dynamic_temp_factor)
+
+      # choose the most conservative adjustment_delta among the last few readings, to smooth over data that has subtle outliers
+      adjustment_delta = [adjustment_delta1, adjustment_delta2, adjustment_delta3].min { |a,b| a.abs <=> b.abs }
 
       adjusted_tempf += adjustment_delta
     end
 
     assign_attributes(tempf: adjusted_tempf)
+  end
+
+  # adjustment delta = how much we should adjust the current adjusted_tempf to achieve our best guess at the current real temperature
+  def calc_adjustment_delta(first_reading, second_reading, dynamic_temp_factor)
+    # none of these should happen, calling code should avoid
+    raise 'first_reading must have a raw_tempf' unless first_reading.raw_tempf
+    raise 'second_reading must have a raw_tempf' unless second_reading.raw_tempf
+    raise 'first_reading must be before second_reading' unless first_reading.created_at < second_reading.created_at
+
+    minutes_between = (second_reading.created_at - first_reading.created_at) / 60
+
+    adjustment_delta = (second_reading.raw_tempf - first_reading.raw_tempf) * dynamic_temp_factor * 2 / minutes_between
+    adjustment_delta
   end
 end
