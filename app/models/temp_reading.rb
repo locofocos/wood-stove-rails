@@ -31,6 +31,16 @@ class TempReading < ApplicationRecord
   def self.log!
     raw_tempf = CurrentTemp.read_fahrenheit_raw
 
+    if raw_tempf == 0
+      # retry. IO is finicky every now and then.
+      sleep 0.5
+      raw_tempf = CurrentTemp.read_fahrenheit_raw
+    end
+
+    if raw_tempf == 0
+      raise 'Unable to read temperature'
+    end
+
     record = TempReading.create!(raw_tempf: raw_tempf)
     record.derive_temps
     record.save!
