@@ -50,7 +50,7 @@ class SettingsController < ApplicationController
 
           format.html do
             redirect_to temp_readings_path,
-                        notice: 'Settings was successfully updated. Last 60 minutes of data have been recalibrated using these values'
+                        notice: 'Settings were successfully updated. Last 60 minutes of data have been recalibrated using these values'
           end
           format.json { render :show, status: :ok, location: @settings }
         else
