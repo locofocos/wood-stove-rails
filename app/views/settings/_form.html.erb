@@ -22,6 +22,11 @@
   </div>
 
   <div>
+    <%= form.label "Max rate adjustment delta (when the temp is changing quickly, don't rate-adjust the temperature more than this number of degrees)", style: "display: block" %>
+    <%= form.number_field :max_rate_adjustment_delta, step: 1.0 %>
+  </div>
+
+  <div>
     <%= form.submit %>
   </div>
 <% end %>

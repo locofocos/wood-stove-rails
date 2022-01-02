@@ -71,6 +71,14 @@ class TempReading < ApplicationRecord
       # choose the most conservative adjustment_delta among the last few readings, to smooth over data that has subtle outliers
       adjustment_delta = [adjustment_delta1, adjustment_delta2, adjustment_delta3].min { |a,b| a.abs <=> b.abs }
 
+      # If this is configured in settings for 100 F,
+      # then don't allow max_rate_adjustment_delta to go above 100 or below -100.
+      max_rate_adjustment_delta = Settings.first&.max_rate_adjustment_delta
+      if max_rate_adjustment_delta
+        adjustment_delta = [adjustment_delta, max_rate_adjustment_delta].min
+        adjustment_delta = [adjustment_delta, -1 * max_rate_adjustment_delta].max
+      end
+
       adjusted_tempf += adjustment_delta
     end
 
