@@ -12,17 +12,17 @@
   <% end %>
 
   <div>
-    <%= form.label "Static temp factor (fix temperature reading off when the temp is staying steady)", style: "display: block" %>
+    <%= form.label "Surface temp factor (fix temperature reading off when the temp is staying steady)", style: "display: block" %>
     <%= form.number_field :static_temp_factor, step: 0.1 %>
   </div>
 
   <div>
-    <%= form.label "Dynamic temp factor (fix temperature reading when the temp is changing quickly)", style: "display: block" %>
+    <%= form.label "Dynamic/internal temp factor (fix temperature reading when the temp is changing quickly)", style: "display: block" %>
     <%= form.number_field :dynamic_temp_factor, step: 0.1 %>
   </div>
 
   <div>
-    <%= form.label "Max rate adjustment delta (when the temp is changing quickly, don't rate-adjust the temperature more than this number of degrees)", style: "display: block" %>
+    <%= form.label "Max rate adjustment delta (when the temp is changing quickly, don't rate-adjust the internal temperature more than this number of degrees)", style: "display: block" %>
     <%= form.number_field :max_rate_adjustment_delta, step: 1.0 %>
   </div>
 

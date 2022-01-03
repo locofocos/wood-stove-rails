@@ -1,9 +1,9 @@
 <h1>Temperature Readings</h1>
 
 <%= line_chart [
-                   {name: 'Temp (F)', data: @temp_readings.pluck(:created_at, :tempf), color: 'orange'},
-                   {name: 'Temp Non-rate-adjusted (F)', data: @temp_readings.map {|r| [r.created_at, r.non_rate_adjusted_tempf] }, color: 'gray'},
-                   {name: 'Confirmed Temp (F)', data: @temp_readings.pluck(:created_at, :confirmed_tempf), color: 'green'},
+                   {name: 'Internal temp (F)', data: @temp_readings.pluck(:created_at, :tempf), color: 'orange'},
+                   {name: 'Surface temp (F)', data: @temp_readings.map {|r| [r.created_at, r.non_rate_adjusted_tempf] }, color: 'gray'},
+                   {name: 'Confirmed temp (F)', data: @temp_readings.pluck(:created_at, :confirmed_tempf), color: 'green'},
                    *@monitors_for_chart.map {|hash| {name: hash[:name], data: @temp_readings.map{ |r| [r.created_at, hash[:value_f]] }, points: false, color: hash[:color]}},
                ], min: nil, max: nil %>
 
@@ -25,9 +25,9 @@
 <table>
   <thead>
     <tr>
-      <th>Temp (F)</th>
-      <th>Temp (F) Non-<br>rate-adjusted</th>
-      <th>Temp (F)<br>Confirmed</th>
+      <th>Internal<br>temp (F)</th>
+      <th>Surface<br>temp (F)</th>
+      <th>Confirmed<br>temp (F)<br></th>
       <th>Time</th>
       <th>Raw time</th>
     </tr>
@@ -44,7 +44,3 @@
   <% end %>
   </tbody>
 </table>
-
-<p>
-  "Temp Non-rate-adjusted" = not adjusted to account for the rate of temperature change
-</p>
