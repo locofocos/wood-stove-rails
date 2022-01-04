@@ -8,11 +8,18 @@ class TempMonitor < ApplicationRecord
   end
 
   def process
-    # TODO only apply this logic for notification actions
-    fired_very_recently = last_fired_at && last_fired_at > 10.minutes.ago
-    if fired_very_recently
-      Rails.logger.info("Skipping temp monitor #{id} because it fired very recently")
+    unless enabled
+      Rails.logger.info("Skipping temp monitor #{id} because it's disabled")
       return
+    end
+
+    unless toggle_fan # we never want to skip toggling the fan because of its affect on the stove temp
+
+      fired_very_recently = last_fired_at && last_fired_at > 10.minutes.ago
+      if fired_very_recently
+        Rails.logger.info("Skipping temp monitor #{id} because it fired very recently")
+        return
+      end
     end
 
     second_to_last = TempReading.second_to_last
@@ -20,13 +27,21 @@ class TempMonitor < ApplicationRecord
 
     if upper_limitf
       has_crossed_upper_limit = second_to_last.tempf < upper_limitf && last.tempf >= upper_limitf
-      if has_crossed_upper_limit
-        title = "🔥 Upper temp limit crossed"
-        body = "Crossed from #{helpers.number_to_human(second_to_last.tempf)} to #{helpers.number_to_human(last.tempf)}. Limit is #{upper_limitf}"
-        Rails.logger.info(strip_emojis("#{title} - #{body}"))
 
-        send_push_notification!(title, body)
-        update!(last_fired_at: Time.now)
+      if has_crossed_upper_limit
+        if send_notifications
+          title = "🔥 Upper temp limit crossed"
+          body = "Crossed from #{helpers.number_to_human(second_to_last.tempf)} to #{helpers.number_to_human(last.tempf)}. Limit is #{upper_limitf}"
+          Rails.logger.info(strip_emojis("#{title} - #{body}"))
+
+          send_push_notification!(title, body)
+          update!(last_fired_at: Time.now)
+        end
+
+        if toggle_fan
+          RelayService.on
+          update!(last_fired_at: Time.now)
+        end
       end
     end
 
@@ -34,12 +49,19 @@ class TempMonitor < ApplicationRecord
       has_crossed_lower_limit = second_to_last.tempf > lower_limitf && last.tempf <= lower_limitf
 
       if has_crossed_lower_limit
-        title = "❄️ Lower temp limit crossed"
-        body = "Crossed from #{helpers.number_to_human(second_to_last.tempf)} to #{helpers.number_to_human(last.tempf)}. Limit is #{lower_limitf}"
-        Rails.logger.info(strip_emojis("#{title} - #{body}"))
+        if send_notifications
+          title = "❄️ Lower temp limit crossed"
+          body = "Crossed from #{helpers.number_to_human(second_to_last.tempf)} to #{helpers.number_to_human(last.tempf)}. Limit is #{lower_limitf}"
+          Rails.logger.info(strip_emojis("#{title} - #{body}"))
 
-        send_push_notification!(title, body)
-        update!(last_fired_at: Time.now)
+          send_push_notification!(title, body)
+          update!(last_fired_at: Time.now)
+        end
+
+        if toggle_fan
+          RelayService.off
+          update!(last_fired_at: Time.now)
+        end
       end
     end
   end
