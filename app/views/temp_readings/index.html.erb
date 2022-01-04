@@ -5,7 +5,7 @@
                    {name: 'Surface temp (F)', data: @temp_readings.map {|r| [r.created_at, r.non_rate_adjusted_tempf] }, color: 'gray'},
                    {name: 'Confirmed temp (F)', data: @temp_readings.pluck(:created_at, :confirmed_tempf), color: 'green'},
                    *@monitors_for_chart.map {|hash| {name: hash[:name], data: @temp_readings.map{ |r| [r.created_at, hash[:value_f]] }, points: false, color: hash[:color]}},
-               ], min: nil, max: nil %>
+               ], min: 200, max: nil %>
 
 <p style="color: green"><%= notice %></p>
 
