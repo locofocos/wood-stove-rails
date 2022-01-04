@@ -17,9 +17,6 @@ class TempMonitor < ApplicationRecord
     second_to_last = TempReading.second_to_last
     last = TempReading.last
 
-    #TODO make some way to avoid this firing too frequently. Mainly when the value barely fluctuates around the limit.
-    # Or maybe there needs to be a resolution threshold.
-
     if upper_limitf
       has_crossed_upper_limit = second_to_last.tempf < upper_limitf && last.tempf >= upper_limitf
       if has_crossed_upper_limit
