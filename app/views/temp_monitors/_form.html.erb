@@ -11,17 +11,37 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :upper_limitf, style: "display: block" %>
+  <div style="margin: 8px;">
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div style="margin: 8px;">
+    <%= form.label :upper_limitf %>
     <%= form.text_field :upper_limitf %>
   </div>
 
-  <div>
-    <%= form.label :lower_limitf, style: "display: block" %>
+  <div style="margin: 8px;">
+    <%= form.label :lower_limitf %>
     <%= form.text_field :lower_limitf %>
   </div>
 
-  <div>
+  <div style="margin: 8px;">
+    <%= form.label :send_notifications %>
+    <%= form.check_box :send_notifications %>
+  </div>
+
+  <div style="margin: 8px;">
+    <%= form.label :toggle_fan %>
+    <%= form.check_box :toggle_fan %>
+  </div>
+
+  <div style="margin: 8px;">
+    <%= form.label :enabled %>
+    <%= form.check_box :enabled %>
+  </div>
+
+  <div style="margin: 8px; padding-top: 16px;">
     <%= form.submit %>
   </div>
 <% end %>

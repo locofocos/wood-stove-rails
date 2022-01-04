@@ -12,7 +12,7 @@ class TempMonitorsController < ApplicationController
 
   # GET /temp_monitors/new
   def new
-    @temp_monitor = TempMonitor.new
+    @temp_monitor = TempMonitor.new(enabled: true)
   end
 
   # GET /temp_monitors/1/edit
@@ -65,6 +65,6 @@ class TempMonitorsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def temp_monitor_params
-      params.require(:temp_monitor).permit(:upper_limitf, :lower_limitf)
+      params.require(:temp_monitor).permit(:upper_limitf, :lower_limitf, :title, :send_notifications, :toggle_fan, :enabled )
     end
 end

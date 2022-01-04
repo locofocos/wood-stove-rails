@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_02_043356) do
+ActiveRecord::Schema.define(version: 2022_01_04_001251) do
 
   create_table "settings", force: :cascade do |t|
     t.float "static_temp_factor"
@@ -26,6 +26,10 @@ ActiveRecord::Schema.define(version: 2022_01_02_043356) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.datetime "last_fired_at", precision: 6
+    t.string "title"
+    t.boolean "send_notifications"
+    t.boolean "toggle_fan"
+    t.boolean "enabled"
   end
 
   create_table "temp_readings", force: :cascade do |t|

@@ -8,6 +8,7 @@ class TempMonitor < ApplicationRecord
   end
 
   def process
+    # TODO only apply this logic for notification actions
     fired_very_recently = last_fired_at && last_fired_at > 10.minutes.ago
     if fired_very_recently
       Rails.logger.info("Skipping temp monitor #{id} because it fired very recently")

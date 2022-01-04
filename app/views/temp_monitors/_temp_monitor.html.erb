@@ -1,4 +1,9 @@
 <div id="<%= dom_id temp_monitor %>">
+
+  <h2>
+    <strong><%= temp_monitor.title %></strong>
+  </h2>
+
   <p>
     <strong>Upper limitf:</strong>
     <%= temp_monitor.upper_limitf %>
@@ -7,6 +12,21 @@
   <p>
     <strong>Lower limitf:</strong>
     <%= temp_monitor.lower_limitf %>
+  </p>
+
+  <p>
+    <strong>Send notifications:</strong>
+    <%= temp_monitor.send_notifications %>
+  </p>
+
+  <p>
+    <strong>Toggle fan:</strong>
+    <%= temp_monitor.toggle_fan %>
+  </p>
+
+  <p>
+    <strong>Enabled:</strong>
+    <%= temp_monitor.enabled %>
   </p>
 
 </div>
