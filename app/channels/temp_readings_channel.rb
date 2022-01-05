@@ -1,6 +1,6 @@
 class TempReadingsChannel < ApplicationCable::Channel
   def subscribed
-    # stream_from "some_channel"
+    stream_from "temp_readings_broadcasting"
   end
 
   def unsubscribed

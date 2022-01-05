@@ -48,6 +48,9 @@ class TempReading < ApplicationRecord
 
     TempMonitor.process_all
 
+    data = 'hello world'
+    ActionCable.server.broadcast("temp_readings_broadcasting", data) # tell clients to refresh their page to view new temps
+
     record
   end
 
