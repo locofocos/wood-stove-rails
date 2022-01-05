@@ -18,6 +18,12 @@ curl -sSL https://get.rvm.io | bash -s stable --rails
 # screen -r # to reconnect
 ```
 
+Setup redis, if you want the page to automatically refresh to show the latest temperature data (using ActionCable):
+```
+sudo apt install redis-server
+redis-cli ping   # verify it worked
+```
+
 Seed some data:
 ```
 bin/rails db:migrate RAILS_ENV=development
