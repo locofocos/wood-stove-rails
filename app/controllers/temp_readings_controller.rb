@@ -3,7 +3,8 @@
 class TempReadingsController < ApplicationController
   def index
     limit = params[:limit].present? ? params[:limit].to_i : 30
-    @temp_readings = TempReading.order(created_at: :desc).limit(limit)
+    offset = params[:offset].present? ? params[:offset].to_i : 0
+    @temp_readings = TempReading.order(created_at: :desc).limit(limit).offset(offset)
 
     @monitors_for_chart = []
     TempMonitor.where(enabled: true).each do |monitor|
