@@ -52,6 +52,34 @@ screen rails s -b 192.168.1.188
 # then ctrl+A   D
 ```
 
+Or start the rails server automatically on boot:
+```
+# from
+# https://forums.raspberrypi.com/viewtopic.php?p=921354
+# https://forums.raspberrypi.com/viewtopic.php?t=202216
+
+cd /etc/systemd/system/
+sudo vi woodstove.service
+
+[Service]
+WorkingDirectory=/home/pi/wood-stove-rails
+ExecStart=/bin/bash -lc 'rails s -b 192.168.1.188'
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=woodstoverails
+User=pi
+Group=pi
+[Install]
+WantedBy=multi-user.target
+
+:wq
+
+sudo chmod u+rwx /etc/systemd/system/woodstove.service
+sudo systemctl enable  woodstove
+sudo systemctl start woodstove
+```
+
 Control cron jobs for recording temp info (and processing monitors/notifications):
 ```
 # Turn them on
@@ -61,14 +89,6 @@ bundle exec whenever --update-crontab --set environment='development' # see conf
 bundle exec whenever --clear-crontab
 ```
 
-Control monitors (still needs a rails ui to be built) inside `rails c`:
-```
-# Update monitor thresholds
-TempMonitor.last.update!(upper_limitf: 500, lower_limitf: 60)
-
-# Disable monitors (maybe you want to keep cron jobs recording data but stop notifications):
-TempMonitor.last.update!(upper_limitf: nil, lower_limitf: nil)
-```
 
 
 ## Hardware
