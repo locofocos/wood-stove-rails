@@ -1,5 +1,3 @@
-<h1>Temperature Readings</h1>
-
 <%= line_chart [
                    {name: 'Internal temp (F)', data: @temp_readings.pluck(:created_at, :tempf), color: 'orange'},
                    {name: 'Surface temp (F)', data: @temp_readings.map {|r| [r.created_at, r.non_rate_adjusted_tempf] }, color: 'gray'},
@@ -26,11 +24,11 @@
 </div>
 
 
-<div style="margin: 24px">
+<div style="margin: 16px 0px">
   <%= render 'relays/new_form' %>
 </div>
 
-<div style="margin: 24px">
+<div style="margin: 16px 0px">
   <%= render 'confirmed_readings/new_form' %>
 </div>
 
@@ -41,7 +39,6 @@
       <th>Surface<br>temp (F)</th>
       <th>Confirmed<br>temp (F)<br></th>
       <th>Time</th>
-      <th>Raw time</th>
     </tr>
   </thead>
   <tbody>
@@ -50,7 +47,6 @@
       <td><%= number_to_human(temp_reading.tempf) %></td>
       <td><%= number_to_human(temp_reading.non_rate_adjusted_tempf) %></td>
       <td><%= number_to_human(temp_reading.confirmed_tempf) %></td>
-      <td><%= time_ago_in_words(temp_reading.created_at) + ' ago' %></td>
       <td><%= temp_reading.pretty_timestamp %></td>
     </tr>
   <% end %>
