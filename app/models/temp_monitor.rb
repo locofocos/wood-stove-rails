@@ -18,13 +18,24 @@ class TempMonitor < ApplicationRecord
       return
     end
 
-    unless toggle_fan # we never want to skip toggling the fan because of its effect on the stove temp
+    # This logic works okay. But if you have 2 notifications that might fire back to back, and you want to avoid that, it doesn't prevent the 2nd notification.
+    # For example, a monitor "internal temp is too hot" and a monitor "surface temp is too hot".
+    # The first notification got my attention, so I don't need another notification.
+    # unless toggle_fan # we never want to skip toggling the fan because of its effect on the stove temp
+    #
+    #   fired_very_recently = last_fired_at && last_fired_at > 10.minutes.ago
+    #   if fired_very_recently
+    #     Rails.logger.info("Skipping temp monitor #{id} because it fired very recently")
+    #     return
+    #   end
+    # end
 
-      fired_very_recently = last_fired_at && last_fired_at > 10.minutes.ago
-      if fired_very_recently
-        Rails.logger.info("Skipping temp monitor #{id} because it fired very recently")
-        return
-      end
+    # Prevent sending back-to-back push notifications for different monitors
+    last_notification_time = TempMonitor.where(send_notifications: true).pluck(:last_fired_at).compact.max
+    if last_notification_time
+      notification_fired_recently = last_notification_time > 10.minutes.ago
+    else
+      notification_fired_recently = false
     end
 
     second_to_last = TempReading.second_to_last
@@ -41,7 +52,11 @@ class TempMonitor < ApplicationRecord
           body = "#{pretty_reading_location} crossed from #{helpers.number_to_human(second_to_last.temp_by_location(loc))} to #{helpers.number_to_human(last.temp_by_location(loc))}. Limit is #{upper_limitf}"
           Rails.logger.info(strip_emojis("#{title} - #{body}"))
 
-          send_push_notification!(title, body)
+          if notification_fired_recently
+            Rails.logger.info("Skipping notification for temp monitor #{id} because another notification was sent recently")
+          else
+            send_push_notification!(title, body)
+          end
           update!(last_fired_at: Time.now)
         end
 
@@ -61,7 +76,12 @@ class TempMonitor < ApplicationRecord
           body = "#{pretty_reading_location} crossed from #{helpers.number_to_human(second_to_last.temp_by_location(loc))} to #{helpers.number_to_human(last.temp_by_location(loc))}. Limit is #{lower_limitf}"
           Rails.logger.info(strip_emojis("#{title} - #{body}"))
 
-          send_push_notification!(title, body)
+          if notification_fired_recently
+            Rails.logger.info("Skipping notification for temp monitor #{id} because another notification was sent recently")
+          else
+            send_push_notification!(title, body)
+          end
+
           update!(last_fired_at: Time.now)
         end
 
