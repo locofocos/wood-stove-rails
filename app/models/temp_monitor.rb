@@ -1,4 +1,9 @@
+# reading_location - the temperature reading location that will be checked.
+#   Possible values in the future: the stove internal temp, the stove sidewall, the stove's exhaust pipe, the room ambient temperature, etc.
 class TempMonitor < ApplicationRecord
+
+  READING_LOCATION_VALUES = ['INTERNAL_TEMPF', 'SURFACE_TEMPF']
+  validates :reading_location, inclusion: READING_LOCATION_VALUES, presence: true
 
   # Process all monitors, possibly send out notifications
   def self.process_all
@@ -25,13 +30,15 @@ class TempMonitor < ApplicationRecord
     second_to_last = TempReading.second_to_last
     last = TempReading.last
 
+    loc = reading_location
+
     if upper_limitf
-      has_crossed_upper_limit = second_to_last.tempf < upper_limitf && last.tempf >= upper_limitf
+      has_crossed_upper_limit = second_to_last.temp_by_location(loc) < upper_limitf && last.temp_by_location(loc) >= upper_limitf
 
       if has_crossed_upper_limit
         if send_notifications
           title = "🔥 Upper temp limit crossed"
-          body = "Crossed from #{helpers.number_to_human(second_to_last.tempf)} to #{helpers.number_to_human(last.tempf)}. Limit is #{upper_limitf}"
+          body = "#{pretty_reading_location} crossed from #{helpers.number_to_human(second_to_last.temp_by_location(loc))} to #{helpers.number_to_human(last.temp_by_location(loc))}. Limit is #{upper_limitf}"
           Rails.logger.info(strip_emojis("#{title} - #{body}"))
 
           send_push_notification!(title, body)
@@ -46,12 +53,12 @@ class TempMonitor < ApplicationRecord
     end
 
     if lower_limitf
-      has_crossed_lower_limit = second_to_last.tempf > lower_limitf && last.tempf <= lower_limitf
+      has_crossed_lower_limit = second_to_last.temp_by_location(loc) > lower_limitf && last.temp_by_location(loc) <= lower_limitf
 
       if has_crossed_lower_limit
         if send_notifications
           title = "❄️ Lower temp limit crossed"
-          body = "Crossed from #{helpers.number_to_human(second_to_last.tempf)} to #{helpers.number_to_human(last.tempf)}. Limit is #{lower_limitf}"
+          body = "#{pretty_reading_location} crossed from #{helpers.number_to_human(second_to_last.temp_by_location(loc))} to #{helpers.number_to_human(last.temp_by_location(loc))}. Limit is #{lower_limitf}"
           Rails.logger.info(strip_emojis("#{title} - #{body}"))
 
           send_push_notification!(title, body)
@@ -101,6 +108,10 @@ class TempMonitor < ApplicationRecord
     else
       raise "Push notification failed! response.body: #{response.body}"
     end
+  end
+
+  def pretty_reading_location
+    reading_location.humanize
   end
 
   private

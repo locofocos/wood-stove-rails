@@ -15,10 +15,25 @@ class TempReading < ApplicationRecord
     Rails.logger.error("Unable to log current temperature: #{e}")
   end
 
+  def temp_by_location(location)
+    raise "Unknown location #{location}" unless TempMonitor::READING_LOCATION_VALUES.include? location
+
+    case location
+    when 'INTERNAL_TEMPF'
+      return tempf
+    when 'SURFACE_TEMPF'
+      return surface_tempf
+    else
+      raise "Unhandled location #{location}"
+    end
+  end
+
   # Surface temperature == the non-rate-adjusted temperature.
   # Adjust for the sensor not picking up all the heat.
   # But NOT adjusted to account for the rate of change.
   def surface_tempf
+    # There's not a big reason not to persist this in the db. It just evolved this way out of convenience.
+    # Might need to persist this value for performance one day.
     if raw_tempf
       static_temp_factor = Settings.first&.static_temp_factor || 2.1
       (raw_tempf * static_temp_factor) - 70

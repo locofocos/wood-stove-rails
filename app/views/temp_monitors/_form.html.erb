@@ -27,6 +27,11 @@
   </div>
 
   <div style="margin: 8px;">
+    <%= form.label :reading_location %>
+    <%= form.select :reading_location, TempMonitor::READING_LOCATION_VALUES %>
+  </div>
+
+  <div style="margin: 8px;">
     <%= form.label :send_notifications %>
     <%= form.check_box :send_notifications %>
   </div>

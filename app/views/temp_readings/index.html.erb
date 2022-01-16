@@ -1,8 +1,8 @@
 <%= line_chart [
-                   {name: 'Internal temp (F)', data: @temp_readings.pluck(:created_at, :tempf), color: 'orange'},
-                   {name: 'Surface temp (F)', data: @temp_readings.map {|r| [r.created_at, r.surface_tempf] }, color: 'gray'},
+                   {name: 'Internal temp (F)', data: @temp_readings.pluck(:created_at, :tempf), color: TempReadingsController::INTERNAL_TEMP_COLOR},
+                   {name: 'Surface temp (F)', data: @temp_readings.map {|r| [r.created_at, r.surface_tempf] }, color: TempReadingsController::SURFACE_TEMP_COLOR},
                    {name: 'Confirmed temp (F)', data: @temp_readings.pluck(:created_at, :confirmed_tempf), color: 'green', points: true}, # show points for confirmed readings b/c they're sparse enough that they disappear if you turn off points
-                   *@monitors_for_chart.map {|hash| {name: hash[:name], data: @temp_readings.map{ |r| [r.created_at, hash[:value_f]] }, points: false, color: hash[:color], library: {borderDash: [1,5]}}},
+                   *@monitors_for_chart.map {|hash| {name: hash[:name], data: @temp_readings.map{ |r| [r.created_at, hash[:value_f]] }, points: false, color: hash[:color], library: {borderDash: [2,6], borderDashOffset: hash[:color] == 'orange' ? 4 : 0}}},
                ], min: 200, max: nil, points: false %>
 
 <p style="color: green"><%= notice %></p>
