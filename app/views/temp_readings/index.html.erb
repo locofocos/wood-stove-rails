@@ -1,7 +1,7 @@
 <%= line_chart [
                    {name: 'Internal temp (F)', data: @temp_readings.pluck(:created_at, :tempf), color: 'orange'},
                    {name: 'Surface temp (F)', data: @temp_readings.map {|r| [r.created_at, r.non_rate_adjusted_tempf] }, color: 'gray'},
-                   {name: 'Confirmed temp (F)', data: @temp_readings.pluck(:created_at, :confirmed_tempf), color: 'green'},
+                   {name: 'Confirmed temp (F)', data: @temp_readings.pluck(:created_at, :confirmed_tempf), color: 'green', points: true}, # show points for confirmed readings b/c they're sparse enough that they disappear if you turn off points
                    *@monitors_for_chart.map {|hash| {name: hash[:name], data: @temp_readings.map{ |r| [r.created_at, hash[:value_f]] }, points: false, color: hash[:color], library: {borderDash: [1,5]}}},
                ], min: 200, max: nil, points: false %>
 
