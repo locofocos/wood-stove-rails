@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# temp_f - our best approximation of the internal temperature of the stove
 class TempReading < ApplicationRecord
 
   def pretty_timestamp
@@ -14,9 +15,10 @@ class TempReading < ApplicationRecord
     Rails.logger.error("Unable to log current temperature: #{e}")
   end
 
+  # Surface temperature == the non-rate-adjusted temperature.
   # Adjust for the sensor not picking up all the heat.
   # But NOT adjusted to account for the rate of change.
-  def non_rate_adjusted_tempf
+  def surface_tempf
     if raw_tempf
       static_temp_factor = Settings.first&.static_temp_factor || 2.1
       (raw_tempf * static_temp_factor) - 70
