@@ -35,11 +35,15 @@ class TempReading < ApplicationRecord
     # There's not a big reason not to persist this in the db. It just evolved this way out of convenience.
     # Might need to persist this value for performance one day.
     if raw_tempf
-      static_temp_factor = Settings.first&.static_temp_factor || 2.1
+      static_temp_factor = settings&.static_temp_factor || 2.1
       (raw_tempf * static_temp_factor) - 70
     else
       tempf
     end
+  end
+
+  def settings
+    @settings ||= Settings.first
   end
 
   # Read the current temperature from the sensor and create a new TempReading record with the value.
