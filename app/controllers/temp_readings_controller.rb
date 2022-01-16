@@ -10,6 +10,8 @@ class TempReadingsController < ApplicationController
     offset = params[:offset].present? ? params[:offset].to_i : 0
     @temp_readings = TempReading.order(created_at: :desc).limit(limit).offset(offset)
 
+    @settings = Settings.first
+
     @monitors_for_chart = []
     TempMonitor.where(enabled: true).each do |monitor|
       base_name = monitor.title.present? ? monitor.title : "Monitor #{monitor.id}"
