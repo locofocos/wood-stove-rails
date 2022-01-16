@@ -18,7 +18,7 @@ class TempMonitor < ApplicationRecord
       return
     end
 
-    unless toggle_fan # we never want to skip toggling the fan because of its affect on the stove temp
+    unless toggle_fan # we never want to skip toggling the fan because of its effect on the stove temp
 
       fired_very_recently = last_fired_at && last_fired_at > 10.minutes.ago
       if fired_very_recently
