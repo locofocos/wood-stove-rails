@@ -13,12 +13,12 @@
 
   <div>
     <%= form.label "Surface temp factor (fix temperature reading off when the temp is staying steady)", style: "display: block" %>
-    <%= form.number_field :static_temp_factor, step: 0.1 %>
+    <%= form.number_field :static_temp_factor, step: 0.01 %>
   </div>
 
   <div>
     <%= form.label "Dynamic/internal temp factor (fix temperature reading when the temp is changing quickly)", style: "display: block" %>
-    <%= form.number_field :dynamic_temp_factor, step: 0.1 %>
+    <%= form.number_field :dynamic_temp_factor, step: 0.01 %>
   </div>
 
   <div>
