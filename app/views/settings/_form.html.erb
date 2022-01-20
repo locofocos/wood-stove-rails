@@ -12,8 +12,17 @@
   <% end %>
 
   <div>
-    <%= form.label "Surface temp factor (fix temperature reading off when the temp is staying steady)", style: "display: block" %>
+    <label style="display: block">
+      Surface temp factor. Fix temperature reading off when the temp is staying steady. Increasing this raises higher temperatures more than low temperatures.
+    </label>
     <%= form.number_field :static_temp_factor, step: 0.01 %>
+  </div>
+
+  <div>
+    <label style="display: block">
+      Surface temp offset. Fix temperature reading off when the temp is staying steady. Increasing this raises all temperatures equally.
+    </label>
+    <%= form.number_field :static_temp_offset, step: 1 %>
   </div>
 
   <div>

@@ -28,7 +28,7 @@ Seed some data:
 ```
 bin/rails db:migrate RAILS_ENV=development
 
-Settings.create!(static_temp_factor: 2.1, dynamic_temp_factor: 16)
+Settings.create!(static_temp_factor: 1.1, static_temp_offset: 75, dynamic_temp_factor: 0)
 
 TempReading.create(tempf: 50.0) # create at least one so that TempMonitor logic depending on comparing to previous doesn't break
 

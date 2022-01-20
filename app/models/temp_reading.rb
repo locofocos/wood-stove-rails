@@ -3,15 +3,6 @@
 # temp_f - our best approximation of the internal temperature of the stove
 class TempReading < ApplicationRecord
 
-  # Use case for adjusting this: you've got the sensor pointed at the same spot as a physical thermometer,
-  # and you need to tweak the static_temp_factor both up and down, depending on where you're handling a high or a low temperature.
-  # -75 is confusingly low. Honestly it should be some value around room temperature, or a little above it.
-  # Such a negative value will give pretty trash reading when the stove is close to room temperature.
-  # But this is what some spreadsheet calculation gave me for a really good match at temperatures between 350 and 650 ish, confirmed stovetop temps.
-  #   https://docs.google.com/spreadsheets/d/1t2_IKpacOHNnMNranG5nNOvNOESzEpj5VBQS6sRkMVI/edit#gid=1420189664
-  # TODO allow configuring this via settings.
-  TEMP_WHERE_SENSOR_NEEDS_NO_ADJUSTING = -75
-
   def pretty_timestamp
     created_at.in_time_zone('US/Central').strftime('%I:%M %p %b %d')
   end
@@ -44,8 +35,9 @@ class TempReading < ApplicationRecord
     # There's not a big reason not to persist this in the db. It just evolved this way out of convenience.
     # Might need to persist this value for performance one day.
     if raw_tempf
-      static_temp_factor = (settings || Settings.first)&.static_temp_factor || 2.1
-      (raw_tempf * static_temp_factor) - TEMP_WHERE_SENSOR_NEEDS_NO_ADJUSTING
+      static_temp_factor = (settings || Settings.first)&.static_temp_factor || 1.1
+      static_temp_offset = (settings || Settings.first)&.static_temp_offset || 75
+      (raw_tempf * static_temp_factor) + static_temp_offset
     else
       tempf
     end
@@ -89,11 +81,15 @@ class TempReading < ApplicationRecord
   # Might call this after initial creation, when you realize that your constant factors
   # in temp algorithms need to be adjusted (like when these readings don't align with a physical thermometer).
   def derive_temps
-    # 2.1 and TEMP_WHERE_SENSOR_NEEDS_NO_ADJUSTING - derived from trial and error with real values.
-    # Designed to keep it correct at room temperature.
     # Basically account for the sensor not picking up all the heat, for whatever reason.
-    static_temp_factor = Settings.first&.static_temp_factor || 2.1
-    the_surface_tempf = (raw_tempf * static_temp_factor) - TEMP_WHERE_SENSOR_NEEDS_NO_ADJUSTING
+    # 1.1 and 75 - derived from trial and error with real values.
+    # You could use values that keep it correct at room temperature (static_temp_offset should be about -70 in that case).
+    # But these values (which unfortunately give a very high value at room temperature)
+    # gave me for a really good match at temperatures between 350 and 650 ish (confirmed stovetop temps).
+    # Example spreadsheet for calculating these: https://docs.google.com/spreadsheets/d/1t2_IKpacOHNnMNranG5nNOvNOESzEpj5VBQS6sRkMVI/edit#gid=1420189664
+    static_temp_factor = Settings.first&.static_temp_factor || 1.1
+    static_temp_offset = Settings.first&.static_temp_offset || 75
+    the_surface_tempf = (raw_tempf * static_temp_factor) + static_temp_offset
     adjusted_tempf = the_surface_tempf
 
     # Attempt to calculate the actual stove temperature based on the current rate of temperature change.
