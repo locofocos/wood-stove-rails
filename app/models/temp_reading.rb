@@ -3,6 +3,10 @@
 # temp_f - our best approximation of the internal temperature of the stove
 class TempReading < ApplicationRecord
 
+  # Use case for adjusting this: you've got the sensor pointed at the same spot as a physical thermometer,
+  # and you need to tweak the static_temp_factor both up and down, depending on where you're handling a high or a low temperature.
+  TEMP_WHERE_SENSOR_NEEDS_NO_ADJUSTING = 70
+
   def pretty_timestamp
     created_at.in_time_zone('US/Central').strftime('%I:%M %p %b %d')
   end
@@ -36,7 +40,7 @@ class TempReading < ApplicationRecord
     # Might need to persist this value for performance one day.
     if raw_tempf
       static_temp_factor = (settings || Settings.first)&.static_temp_factor || 2.1
-      (raw_tempf * static_temp_factor) - 70
+      (raw_tempf * static_temp_factor) - TEMP_WHERE_SENSOR_NEEDS_NO_ADJUSTING
     else
       tempf
     end
@@ -80,10 +84,12 @@ class TempReading < ApplicationRecord
   # Might call this after initial creation, when you realize that your constant factors
   # in temp algorithms need to be adjusted (like when these readings don't align with a physical thermometer).
   def derive_temps
-    # 2.1 and 70 - derived from trial and error with real values. Designed to keep it correct at room temperature.
+    # 2.1 and TEMP_WHERE_SENSOR_NEEDS_NO_ADJUSTING - derived from trial and error with real values.
+    # Designed to keep it correct at room temperature.
     # Basically account for the sensor not picking up all the heat, for whatever reason.
     static_temp_factor = Settings.first&.static_temp_factor || 2.1
-    adjusted_tempf = (raw_tempf * static_temp_factor) - 70
+    the_surface_tempf = (raw_tempf * static_temp_factor) - TEMP_WHERE_SENSOR_NEEDS_NO_ADJUSTING
+    adjusted_tempf = the_surface_tempf
 
     # Attempt to calculate the actual stove temperature based on the current rate of temperature change.
     # Temp rising much faster right now -> the true temp is much higher than the current reading.
@@ -109,7 +115,7 @@ class TempReading < ApplicationRecord
         adjustment_delta = [adjustment_delta, -1 * max_rate_adjustment_delta].max
       end
 
-      adjusted_tempf += adjustment_delta
+      adjusted_tempf = the_surface_tempf + adjustment_delta
     end
 
     assign_attributes(tempf: adjusted_tempf)
