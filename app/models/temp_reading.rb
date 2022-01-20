@@ -5,7 +5,12 @@ class TempReading < ApplicationRecord
 
   # Use case for adjusting this: you've got the sensor pointed at the same spot as a physical thermometer,
   # and you need to tweak the static_temp_factor both up and down, depending on where you're handling a high or a low temperature.
-  TEMP_WHERE_SENSOR_NEEDS_NO_ADJUSTING = 70
+  # -75 is confusingly low. Honestly it should be some value around room temperature, or a little above it.
+  # Such a negative value will give pretty trash reading when the stove is close to room temperature.
+  # But this is what some spreadsheet calculation gave me for a really good match at temperatures between 350 and 650 ish, confirmed stovetop temps.
+  #   https://docs.google.com/spreadsheets/d/1t2_IKpacOHNnMNranG5nNOvNOESzEpj5VBQS6sRkMVI/edit#gid=1420189664
+  # TODO allow configuring this via settings.
+  TEMP_WHERE_SENSOR_NEEDS_NO_ADJUSTING = -75
 
   def pretty_timestamp
     created_at.in_time_zone('US/Central').strftime('%I:%M %p %b %d')
