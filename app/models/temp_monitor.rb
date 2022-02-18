@@ -33,7 +33,7 @@ class TempMonitor < ApplicationRecord
     # Prevent sending back-to-back push notifications for different monitors
     last_notification_time = TempMonitor.where(send_notifications: true).pluck(:last_fired_at).compact.max
     if last_notification_time
-      notification_fired_recently = last_notification_time > 10.minutes.ago
+      notification_fired_recently = last_notification_time > 5.minutes.ago
     else
       notification_fired_recently = false
     end
