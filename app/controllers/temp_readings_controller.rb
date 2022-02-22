@@ -14,7 +14,7 @@ class TempReadingsController < ApplicationController
 
     if @temp_readings.first&.tempf
       tempf = @temp_readings.first.tempf
-      @extra_tab_title = "#{number_to_human(tempf)} °F"
+      @extra_tab_title = "#{helpers.number_to_human(tempf)} °F"
     end
 
     @monitors_for_chart = []
@@ -43,5 +43,12 @@ class TempReadingsController < ApplicationController
         @monitors_for_chart << { name: name, value_f: monitor.lower_limitf, color: color }
       end
     end
+  end
+
+  private
+
+  # use view helpers outside of views https://stackoverflow.com/questions/5176718/how-to-use-the-number-to-currency-helper-method-in-the-model-rather-than-view
+  def helpers
+    ActionController::Base.helpers
   end
 end
