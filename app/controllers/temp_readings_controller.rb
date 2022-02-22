@@ -14,7 +14,7 @@ class TempReadingsController < ApplicationController
 
     if @temp_readings.first&.tempf
       tempf = @temp_readings.first.tempf
-      @extra_tab_title = "#{helpers.number_to_human(tempf)} °F #{color_emoji_for_temp(tempf)}"
+      @extra_tab_title = "#{helpers.number_to_human(tempf)} °F #{color_emoji_for_temp(tempf)} "
     end
 
     @monitors_for_chart = []
