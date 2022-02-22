@@ -12,6 +12,11 @@ class TempReadingsController < ApplicationController
 
     @settings = Settings.first
 
+    if @temp_readings.first&.tempf
+      tempf = @temp_readings.first.tempf
+      @extra_tab_title = "#{number_to_human(tempf)} °F"
+    end
+
     @monitors_for_chart = []
     TempMonitor.where(enabled: true).each do |monitor|
       base_name = monitor.title.present? ? monitor.title : "Monitor #{monitor.id}"
