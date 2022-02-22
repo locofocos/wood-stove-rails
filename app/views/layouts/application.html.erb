@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>WoodStoveRails</title>
+    <title>WoodStove <%= @temp_readings&.last&.tempf ? "#{@temp_readings.last.tempf} °F" : '' %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
