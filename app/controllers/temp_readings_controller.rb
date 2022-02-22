@@ -14,7 +14,7 @@ class TempReadingsController < ApplicationController
 
     if @temp_readings.first&.tempf
       tempf = @temp_readings.first.tempf
-      @extra_tab_title = "#{helpers.number_to_human(tempf)} °F"
+      @extra_tab_title = "#{helpers.number_to_human(tempf)} °F #{color_emoji_for_temp(tempf)}"
     end
 
     @monitors_for_chart = []
@@ -46,6 +46,18 @@ class TempReadingsController < ApplicationController
   end
 
   private
+
+  def color_emoji_for_temp(tempf)
+    if tempf >= 650
+      '🔴'
+    elsif tempf >= 400
+      '🟠'
+    elsif tempf >= 250
+      '🟡'
+    else
+      '⚪'
+    end
+  end
 
   # use view helpers outside of views https://stackoverflow.com/questions/5176718/how-to-use-the-number-to-currency-helper-method-in-the-model-rather-than-view
   def helpers
