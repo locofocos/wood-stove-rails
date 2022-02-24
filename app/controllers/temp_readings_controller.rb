@@ -50,13 +50,15 @@ class TempReadingsController < ApplicationController
 
   def color_emoji_for_temp(tempf)
     if tempf >= 650
-      '🔴'
+      '🔥' # too hot, take action. maybe ⚠️
+    elsif tempf >= 575
+      '🔴' # getting hot, watch it...
     elsif tempf >= 400
-      '🟠'
-    elsif tempf >= 250
-      '🟡'
+      '🟠' # nice burn
+    elsif tempf >= 275
+      '🟡' # good simmer
     else
-      '⚪'
+      '⚪' # time to reload
     end
   end
 
