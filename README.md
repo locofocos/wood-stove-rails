@@ -106,7 +106,7 @@ lsmod | grep i2c # check whether the I2C module is started:
 pip install smbus
 ```
 
-Wire up the MLX90614 temp sensor.
+Wire up the MLX90614 temp sensor. The sensor has labels "SDA" and "SCL". I happen to have these hooked up to SDA1 and SCL1 (see `port` in lib/read_temp.py). Ground goes to ground, and VIN goes to a 5V output. The raspberry pi pinout diagrams you find on google are from the perspective of looking down on the PI. For understanding the orientation of the extension ribbon cable, imagine it's connecting two PIs side by side on the same surface. If you get this backwards, the sensor will get quite hot.
 
 Other useful links regarding this sensor:
 * https://www.amazon.com/gp/product/B071VF2RWM/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1
