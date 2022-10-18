@@ -40,6 +40,8 @@ Set PUSHBULLET_ACCESS_TOKEN env variable, grab one from https://www.pushbullet.c
 sudo vi /etc/profile
 export PUSHBULLET_ACCESS_TOKEN=asdf
 :wq
+
+# Test via rails console, TempMonitor.last.send_push_notification!('title here test', 'body')
 ```
 
 Start the rails server:
