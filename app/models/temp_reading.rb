@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-# temp_f - our best approximation of the internal temperature of the stove
+# raw_tempf - straight from the python script. Never tweaked up or down.
+# temp_f - our best approximation of the internal temperature of the stove. Shows in orange in the UI.
+# surface_tempf - the non-rate-adjusted temperature. Shows in gray in the UI.
 class TempReading < ApplicationRecord
 
   def pretty_timestamp
@@ -77,6 +79,20 @@ class TempReading < ApplicationRecord
     save!
   end
 
+  # Context: Initially I built this app to compute the "true" internal temperature (temp_f)
+  # based on the current rate of temperature change.
+  # This was really necessary when the temp sensor was on the thick sidewall.
+  # But it's not really necessary when the temp sensor is pointing on top of the stove.
+  #
+  # Setting this true will only allow "dynamic/internal temp factor" to take effect when the temperature is going down.
+  # This is useful because it's totally fine to have a ROARING fire as the stove is heating up,
+  # and using dynamic_temp_factor in those scenarios will cause upper monitors to trigger too early.
+  # But it's very helpful to pick up scenarios where the temp is dropping suddenly, because that happens
+  # when you closed to damper too much adn your fire just died. Getting alerted sooner makes it easier to restart the fire.
+  #
+  # Experimenting with this, might pull into a configurable setting.
+  ONLY_RATE_ADJUST_DOWN = true
+
   # Derive temps which are based on raw_tempf (and possibly other TempReadings).
   # Might call this after initial creation, when you realize that your constant factors
   # in temp algorithms need to be adjusted (like when these readings don't align with a physical thermometer).
@@ -116,8 +132,15 @@ class TempReading < ApplicationRecord
         adjustment_delta = [adjustment_delta, -1 * max_rate_adjustment_delta].max
       end
 
+      # see comment on ONLY_RATE_ADJUST_DOWN
+      temp_is_rising = adjustment_delta > 0
+      if ONLY_RATE_ADJUST_DOWN && temp_is_rising
+        adjustment_delta = 0
+      end
+
       adjusted_tempf = the_surface_tempf + adjustment_delta
     end
+
 
     assign_attributes(tempf: adjusted_tempf)
   end
