@@ -78,8 +78,8 @@ WantedBy=multi-user.target
 :wq
 
 sudo chmod u+rwx /etc/systemd/system/woodstove.service
-sudo systemctl enable  woodstove
-sudo systemctl start woodstove
+sudo systemctl enable  woodstove # launch it at boot
+sudo systemctl start woodstove   # launch it right now
 ```
 
 Control cron jobs for recording temp info (and processing monitors/notifications):
@@ -89,6 +89,30 @@ bundle exec whenever --update-crontab --set environment='development' # see conf
 
 # Turn them off
 bundle exec whenever --clear-crontab
+```
+
+Start ngrok automatically on boot:
+```
+cd /etc/systemd/system/
+sudo vi ngrok.service
+
+[Service]
+WorkingDirectory=/home/pi/
+ExecStart=/bin/bash -lc './ngrok http 192.168.1.188:3000 --basic-auth="username_here:password_here"'
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=ngrok
+User=pi
+Group=pi
+[Install]
+WantedBy=multi-user.target
+
+:wq
+
+sudo chmod u+rwx /etc/systemd/system/ngrok.service
+sudo systemctl enable  ngrok # launch it at boot
+sudo systemctl start ngrok   # launch it right now
 ```
 
 
