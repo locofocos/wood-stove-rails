@@ -38,7 +38,7 @@ class TempMonitorsController < ApplicationController
   def update
     respond_to do |format|
       if @temp_monitor.update(temp_monitor_params)
-        format.html { redirect_to temp_monitor_url(@temp_monitor), notice: "Temp monitor was successfully updated." }
+        format.html { redirect_to temp_monitors_url, notice: "Temp monitor was successfully updated." }
         format.json { render :show, status: :ok, location: @temp_monitor }
       else
         format.html { render :edit, status: :unprocessable_entity }

@@ -4,7 +4,13 @@
 
 <br>
 
+<div style="padding: 8px;">
+  <%= button_to "Destroy this temp monitor ⚠️", @temp_monitor, { method: :delete, form: {data: {turbo_confirm: 'Delete monitor, are you sure?'} } } %>
+</div>
+
+<!-- This is a pet project, element choice is a judgement-free zone-->
+<br>
+
 <div>
-  <%= link_to "Show this temp monitor", @temp_monitor %> |
   <%= link_to "Back to temp monitors", temp_monitors_path %>
 </div>

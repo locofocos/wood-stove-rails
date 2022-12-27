@@ -19,7 +19,7 @@
   <%= link_to "Last 30 min", temp_readings_path %>
   <%= link_to "Last 1 hr", temp_readings_path(limit: 60) %>
   <%= link_to "Last 2 hr", temp_readings_path(limit: 120) %>
-  <%= link_to "Last 5 hr", temp_readings_path(limit: 300) %>
+  <%= link_to "Last 10 hr", temp_readings_path(limit: 600) %>
   <%= link_to "Minus 1 hr", temp_readings_path(limit: params[:limit], offset: params[:offset].to_i + 60) %>
 </div>
 
