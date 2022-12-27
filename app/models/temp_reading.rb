@@ -115,7 +115,7 @@ class TempReading < ApplicationRecord
     old_reading = TempReading.find_by(created_at: (created_at - 1.5.minutes)...(created_at - 0.5.minutes))
 
     if older_reading&.raw_tempf && old_reading&.raw_tempf
-      dynamic_temp_factor = Settings.first&.dynamic_temp_factor || 16 # 16 is derived from trial and error
+      dynamic_temp_factor = Settings.first&.dynamic_temp_factor || 0 # see README for context. 0 is a simple default value here.
 
       adjustment_delta1 = calc_adjustment_delta(older_reading, old_reading, dynamic_temp_factor)
       adjustment_delta2 = calc_adjustment_delta(old_reading, self, dynamic_temp_factor)

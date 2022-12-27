@@ -28,6 +28,10 @@ Seed some data:
 ```
 bin/rails db:migrate RAILS_ENV=development
 
+# When my temp sensor was pointed at the stove sidewall (where the heat had to go through a lot of 
+# material / firebrick), I was using a dynamic_temp_factor of 16.
+# Once I moved the temp sensor to point at the top of the stove, I set dynamic_temp_factor to zero with great success.
+# However, using some positive value is very helpful along with `ONLY_RATE_ADJUST_DOWN = true` so that your fan turns off quicker if the fire goes out.
 Settings.create!(static_temp_factor: 1.15, static_temp_offset: 75, dynamic_temp_factor: 5, max_rate_adjustment_delta: 100)
 
 TempReading.create(tempf: 50.0) # create at least one so that TempMonitor logic depending on comparing to previous doesn't break
