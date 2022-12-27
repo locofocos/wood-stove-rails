@@ -197,7 +197,7 @@ RSpec.describe TempReading, type: :model do
           expect(temp_c.reload.tempf).to eq(350.2)
           expect(temp_c.reload.surface_tempf).to eq(360.2)
 
-          expect(temp_d.reload.tempf).to eq(347.9) # If we just looked at the past reading, this would be 337.9, a lot lower!
+          expect(temp_d.reload.tempf).to eq(347.9) # If we just looked at the past reading, this would be 337.9, a lot lower! So this reading is more conservative.
           expect(temp_d.reload.surface_tempf).to eq(357.9)
 
           expect(temp_e.reload.tempf).to eq(357.9)
@@ -207,6 +207,34 @@ RSpec.describe TempReading, type: :model do
           expect(temp_c.reload.surface_tempf - temp_c.tempf).to eq(10)
           expect(temp_d.reload.surface_tempf - temp_d.tempf).to eq(10) # If we just looked at the past reading, this would be 20, a lot lower!
           expect(temp_e.reload.surface_tempf - temp_e.tempf).to eq(0)
+        end
+      end
+
+      context 'when there was a small swing down, then a big swing up' do
+        before do
+          temp_a.update!(raw_tempf: 250)
+          temp_b.update!(raw_tempf: 249)
+          temp_c.update!(raw_tempf: 255)
+        end
+
+        it "doesn't rate-adjust at all when the temperature swings up (because ONLY_RATE_ADJUST_DOWN is true)" do
+          TempReading.all.each(&:derive_temps!)
+
+          expect(temp_c.reload.surface_tempf - temp_c.tempf).to eq(0)
+        end
+      end
+
+      context "when there was a small swing up, then a big swing down" do
+        before do
+          temp_a.update!(raw_tempf: 249)
+          temp_b.update!(raw_tempf: 250)
+          temp_c.update!(raw_tempf: 245)
+        end
+
+        it "doesn't rate-adjust the last reading upwards (because ONLY_RATE_ADJUST_DOWN is true)" do
+          TempReading.all.each(&:derive_temps!)
+
+          expect(temp_c.reload.tempf).to be <= temp_c.surface_tempf
         end
       end
     end

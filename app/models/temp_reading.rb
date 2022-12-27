@@ -88,7 +88,7 @@ class TempReading < ApplicationRecord
   # This is useful because it's totally fine to have a ROARING fire as the stove is heating up,
   # and using dynamic_temp_factor in those scenarios will cause upper monitors to trigger too early.
   # But it's very helpful to pick up scenarios where the temp is dropping suddenly, because that happens
-  # when you closed to damper too much adn your fire just died. Getting alerted sooner makes it easier to restart the fire.
+  # when you closed to damper too much and your fire just died. Getting alerted sooner makes it easier to restart the fire.
   #
   # Experimenting with this, might pull into a configurable setting.
   ONLY_RATE_ADJUST_DOWN = true
@@ -133,10 +133,13 @@ class TempReading < ApplicationRecord
       end
 
       # see comment on ONLY_RATE_ADJUST_DOWN
-      temp_is_rising = adjustment_delta > 0
-      if ONLY_RATE_ADJUST_DOWN && temp_is_rising
-        adjustment_delta = 0
+      if ONLY_RATE_ADJUST_DOWN
+        temp_is_rising = adjustment_delta2 > 0
+        if temp_is_rising || adjustment_delta > 0
+          adjustment_delta = 0
+        end
       end
+
 
       adjusted_tempf = the_surface_tempf + adjustment_delta
     end
