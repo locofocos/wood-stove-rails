@@ -177,8 +177,36 @@ RSpec.describe TempReading, type: :model do
       end
 
       context 'when the temperatures are dropping, but there is an outlier' do
+        before do
+          temp_a.update!(raw_tempf: 250)
+          temp_b.update!(raw_tempf: 249)
+          temp_c.update!(raw_tempf: 248)
+          temp_d.update!(raw_tempf: 246) # outlier, too low
+          temp_e.update!(raw_tempf: 246)
+        end
+
         it 'smooths over the outlier by computing tempf more conservatively' do
-          #TODO
+          TempReading.all.each(&:derive_temps!)
+
+          expect(temp_a.reload.tempf).to eq(362.5)
+          expect(temp_a.reload.surface_tempf).to eq(362.5)
+
+          expect(temp_b.reload.tempf).to eq(361.34999999999997)
+          expect(temp_b.reload.surface_tempf).to eq(361.34999999999997)
+
+          expect(temp_c.reload.tempf).to eq(350.2)
+          expect(temp_c.reload.surface_tempf).to eq(360.2)
+
+          expect(temp_d.reload.tempf).to eq(347.9) # If we just looked at the past reading, this would be 337.9, a lot lower!
+          expect(temp_d.reload.surface_tempf).to eq(357.9)
+
+          expect(temp_e.reload.tempf).to eq(357.9)
+          expect(temp_e.reload.surface_tempf).to eq(357.9)
+
+
+          expect(temp_c.reload.surface_tempf - temp_c.tempf).to eq(10)
+          expect(temp_d.reload.surface_tempf - temp_d.tempf).to eq(10) # If we just looked at the past reading, this would be 20, a lot lower!
+          expect(temp_e.reload.surface_tempf - temp_e.tempf).to eq(0)
         end
       end
     end
