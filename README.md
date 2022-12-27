@@ -28,7 +28,7 @@ Seed some data:
 ```
 bin/rails db:migrate RAILS_ENV=development
 
-Settings.create!(static_temp_factor: 1.1, static_temp_offset: 75, dynamic_temp_factor: 0)
+Settings.create!(static_temp_factor: 1.15, static_temp_offset: 75, dynamic_temp_factor: 5, max_rate_adjustment_delta: 100)
 
 TempReading.create(tempf: 50.0) # create at least one so that TempMonitor logic depending on comparing to previous doesn't break
 
@@ -138,4 +138,11 @@ Other useful links regarding this sensor:
 * https://www.amazon.com/gp/product/B071VF2RWM/ref=ppx_yo_dt_b_asin_title_o00_s00?ie=UTF8&psc=1
 * https://olegkutkov.me/2017/08/10/mlx90614-raspberry/
 * https://www.raspberrypi.org/forums/viewtopic.php?t=17738
+
+## Deployment
+
+- Run the test suite on your laptop: `bundle exec rspec`
+- SSH into your raspberry pi
+- cd into the folder where you've cloned the repo
+- `git pull`
 
