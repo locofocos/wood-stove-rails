@@ -34,8 +34,6 @@ bin/rails db:migrate RAILS_ENV=development
 # However, using some positive value is very helpful along with `ONLY_RATE_ADJUST_DOWN = true` so that your fan turns off quicker if the fire goes out.
 Settings.create!(static_temp_factor: 1.15, static_temp_offset: 75, dynamic_temp_factor: 5, max_rate_adjustment_delta: 100)
 
-TempReading.create(tempf: 50.0) # create at least one so that TempMonitor logic depending on comparing to previous doesn't break
-
 TempMonitor.create!(upper_limitf: 500, lower_limitf: 60)
 ```
 
