@@ -11,7 +11,7 @@ Features:
   - Helps accomodate different sensor positions (on top of the stove, pointed at the stove sidewall, further away, etc.)
   - Input field to save confirmed readings, so you can record temperatures from a different thermometer by hand, then tune parameters to make your readings align with them. 
 - Auto refresh when new temperature is recorded
-- Tab icon changes to reflect the stove's temperature
+- Tab icon and title change to reflect the stove's temperature
 
 ![screenshot](screenshot.jpeg)
 
