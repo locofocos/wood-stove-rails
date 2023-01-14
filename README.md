@@ -1,5 +1,7 @@
 # wood-stove-rails
 
+This is a Ruby-on-Rails app that runs on a raspberry pi to monitor and control my wood stove. It monitors the temperature with an infrared sensor. It uses a relay board to turn the stove's blower fan off and on according to limits I define through the web interface. This feedback loop helps regulate the stove's temperature and keeps the fire burning in an efficient, safe range. I get push notifications if it crosses certain limits (like if it's too hot and I need to cool it off, or once the fire has died down and it's the perfect time to reload it). The web interface isn't that polished, but it's really useful!
+
 Features:
 - Saves temperature readings every minute
   - cron jobs controlled via https://github.com/javan/whenever
@@ -12,6 +14,8 @@ Features:
   - Input field to save confirmed readings, so you can record temperatures from a different thermometer by hand, then tune parameters to make your readings align with them. 
 - Auto refresh when new temperature is recorded
 - Tab icon and title change to reflect the stove's temperature
+
+Demo video: https://www.youtube.com/watch?v=sp3rUNzEKyg
 
 ![screenshot](screenshot.jpeg)
 
