@@ -1,4 +1,21 @@
-# README
+# wood-stove-rails
+
+Features:
+- Saves temperature readings every minute
+  - cron jobs controlled via https://github.com/javan/whenever
+- Web interface for viewing historical temp readings (it's barebones)
+- Temperature monitors configurable via web interface
+  - Send a push notification via Pushbullet when it's crossed
+  - Turn the stove's blower fan off/on when it's crossed (helps **regulate stove temperature**)
+- Multiple parameters for tuning temp sensor readings, if they're too high/low
+  - Helps accomodate different sensor positions (on top of the stove, pointed at the stove sidewall, further away, etc.)
+  - Input field to save confirmed readings, so you can record temperatures from a different thermometer by hand, then tune parameters to make your readings align with them. 
+- Auto refresh when new temperature is recorded
+- Tab icon changes to reflect the stove's temperature
+
+![screenshot](screenshot.jpeg)
+
+## Initial setup
 
 Setup rails on your raspberry pi
 ```
@@ -119,7 +136,7 @@ sudo systemctl start ngrok   # launch it right now
 
 
 
-## Hardware
+### Hardware
 
 Enable i2c and friends
 ```
@@ -141,10 +158,18 @@ Other useful links regarding this sensor:
 * https://olegkutkov.me/2017/08/10/mlx90614-raspberry/
 * https://www.raspberrypi.org/forums/viewtopic.php?t=17738
 
-## Deployment
+Relay board I used: https://www.amazon.com/gp/product/B01G05KLIE/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
+
+
+## Deploying updates
 
 - Run the test suite on your laptop: `bundle exec rspec`
 - SSH into your raspberry pi
 - cd into the folder where you've cloned the repo
 - `git pull`
+
+
+## Contributing
+
+This is a side project I'm not investing much time into. Feel free to open an issue and discuss if you really want to contribute something.
 
