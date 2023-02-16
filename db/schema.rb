@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_20_050002) do
+ActiveRecord::Schema.define(version: 2023_02_16_034742) do
 
   create_table "settings", force: :cascade do |t|
     t.float "static_temp_factor"
@@ -19,6 +19,8 @@ ActiveRecord::Schema.define(version: 2022_01_20_050002) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "max_rate_adjustment_delta"
     t.float "static_temp_offset"
+    t.float "dynamic_up_temp_factor", default: 0.0, null: false
+    t.float "dynamic_down_temp_factor", default: 0.0, null: false
   end
 
   create_table "temp_monitors", force: :cascade do |t|

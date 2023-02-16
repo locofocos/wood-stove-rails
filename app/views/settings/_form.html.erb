@@ -26,8 +26,13 @@
   </div>
 
   <div>
-    <%= form.label "Dynamic/internal temp factor (fix temperature reading when the temp is changing quickly)", style: "display: block" %>
-    <%= form.number_field :dynamic_temp_factor, step: 0.01 %>
+    <%= form.label "Dynamic/internal upwards temp factor (fix temperature reading when the temp is rising quickly)", style: "display: block" %>
+    <%= form.number_field :dynamic_up_temp_factor, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.label "Dynamic/internal downwards temp factor (fix temperature reading when the temp is falling quickly)", style: "display: block" %>
+    <%= form.number_field :dynamic_down_temp_factor, step: 0.01 %>
   </div>
 
   <div>

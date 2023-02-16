@@ -80,6 +80,6 @@ class SettingsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def settings_params
-    params.require(:settings).permit(:static_temp_factor, :static_temp_offset, :dynamic_temp_factor, :max_rate_adjustment_delta)
+    params.require(:settings).permit(:static_temp_factor, :static_temp_offset, :dynamic_temp_factor, :max_rate_adjustment_delta, :dynamic_up_temp_factor, :dynamic_down_temp_factor)
   end
 end
