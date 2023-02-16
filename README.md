@@ -165,7 +165,7 @@ Other useful links regarding this sensor:
 * https://olegkutkov.me/2017/08/10/mlx90614-raspberry/
 * https://www.raspberrypi.org/forums/viewtopic.php?t=17738
 
-Relay board I used: https://www.amazon.com/gp/product/B01G05KLIE/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
+For controlling the stove's blower motor, cut an AC extension cord in half, then wire a relay like you would a light switch. See app/models/relay_service.rb for notes on GPIO pin numbers. Here's the relay board I used: https://www.amazon.com/gp/product/B01G05KLIE/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
 
 
 ## Deploying updates
