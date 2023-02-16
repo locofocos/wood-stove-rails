@@ -50,10 +50,12 @@ Seed some data:
 bin/rails db:migrate RAILS_ENV=development
 
 # When my temp sensor was pointed at the stove sidewall (where the heat had to go through a lot of 
-# material / firebrick), I was using a dynamic_temp_factor of 16.
+# material / firebrick), I was using a dynamic_temp_factor (deprecated) of 16.
 # Once I moved the temp sensor to point at the top of the stove, I set dynamic_temp_factor to zero with great success.
-# However, it's helpful to use a value of about 5 for the downwards direction, so that your fan turns off quicker if the fire goes out.
-# But it's good to keep the upwards factor set to zero, so that the stove doesn't cool itself off too early before the surface has warmed up.
+# However, it's helpful to use a value of about 5 for dynamic_down_temp_factor, so that your fan turns off quicker 
+# if you closed the damper too much and your fire just went out.
+# But it's good to keep dynamic_up_temp_factor set to zero, so that the stove doesn't cool itself off too early 
+# before the surface has warmed up. It's completely fine to have a ROARING fire as the stove is heating up.
 Settings.create!(static_temp_factor: 1.15, static_temp_offset: 75, dynamic_down_temp_factor: 5, dynamic_up_temp_factor: 0, max_rate_adjustment_delta: 100)
 
 TempMonitor.create!(upper_limitf: 500, lower_limitf: 60)

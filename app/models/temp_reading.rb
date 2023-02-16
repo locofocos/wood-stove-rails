@@ -79,20 +79,6 @@ class TempReading < ApplicationRecord
     save!
   end
 
-  # Context: Initially I built this app to compute the "true" internal temperature (temp_f)
-  # based on the current rate of temperature change.
-  # This was really necessary when the temp sensor was on the thick sidewall.
-  # But it's not really necessary when the temp sensor is pointing on top of the stove.
-  #
-  # Setting this true will only allow "dynamic/internal temp factor" to take effect when the temperature is going down.
-  # This is useful because it's totally fine to have a ROARING fire as the stove is heating up,
-  # and using dynamic_temp_factor in those scenarios will cause upper monitors to trigger too early.
-  # But it's very helpful to pick up scenarios where the temp is dropping suddenly, because that happens
-  # when you closed to damper too much and your fire just died. Getting alerted sooner makes it easier to restart the fire.
-  #
-  # Experimenting with this, might pull into a configurable setting.
-  ONLY_RATE_ADJUST_DOWN = true
-
   # Derive temps which are based on raw_tempf (and possibly other TempReadings).
   # Might call this after initial creation, when you realize that your constant factors
   # in temp algorithms need to be adjusted (like when these readings don't align with a physical thermometer).
@@ -115,11 +101,12 @@ class TempReading < ApplicationRecord
     old_reading = TempReading.find_by(created_at: (created_at - 1.5.minutes)...(created_at - 0.5.minutes))
 
     if older_reading&.raw_tempf && old_reading&.raw_tempf
-      dynamic_temp_factor = Settings.first&.dynamic_temp_factor || 0 # see README for context. 0 is a simple default value here.
+      dynamic_up_temp_factor = Settings.first&.dynamic_up_temp_factor || 0 # see README for context. 0 is a simple default value here.
+      dynamic_down_temp_factor = Settings.first&.dynamic_down_temp_factor || 0 # same ^
 
-      adjustment_delta1 = calc_adjustment_delta(older_reading, old_reading, dynamic_temp_factor)
-      adjustment_delta2 = calc_adjustment_delta(old_reading, self, dynamic_temp_factor)
-      adjustment_delta3 = calc_adjustment_delta(older_reading, self, dynamic_temp_factor)
+      adjustment_delta1 = calc_adjustment_delta(older_reading, old_reading, dynamic_up_temp_factor, dynamic_down_temp_factor)
+      adjustment_delta2 = calc_adjustment_delta(old_reading, self, dynamic_up_temp_factor, dynamic_down_temp_factor)
+      adjustment_delta3 = calc_adjustment_delta(older_reading, self, dynamic_up_temp_factor, dynamic_down_temp_factor)
 
       # choose the most conservative adjustment_delta among the last few readings, to smooth over data that has subtle outliers
       adjustment_delta = [adjustment_delta1, adjustment_delta2, adjustment_delta3].min { |a,b| a.abs <=> b.abs }
@@ -132,15 +119,6 @@ class TempReading < ApplicationRecord
         adjustment_delta = [adjustment_delta, -1 * max_rate_adjustment_delta].max
       end
 
-      # see comment on ONLY_RATE_ADJUST_DOWN
-      if ONLY_RATE_ADJUST_DOWN
-        temp_is_rising = adjustment_delta2 > 0
-        if temp_is_rising || adjustment_delta > 0
-          adjustment_delta = 0
-        end
-      end
-
-
       adjusted_tempf = the_surface_tempf + adjustment_delta
     end
 
@@ -149,7 +127,7 @@ class TempReading < ApplicationRecord
   end
 
   # adjustment delta = how much we should adjust the current adjusted_tempf to achieve our best guess at the current real temperature
-  def calc_adjustment_delta(first_reading, second_reading, dynamic_temp_factor)
+  def calc_adjustment_delta(first_reading, second_reading, dynamic_up_temp_factor, dynamic_down_temp_factor)
     # none of these should happen, calling code should avoid
     raise 'first_reading must have a raw_tempf' unless first_reading.raw_tempf
     raise 'second_reading must have a raw_tempf' unless second_reading.raw_tempf
@@ -157,7 +135,9 @@ class TempReading < ApplicationRecord
 
     minutes_between = (second_reading.created_at - first_reading.created_at) / 60
 
-    adjustment_delta = (second_reading.raw_tempf - first_reading.raw_tempf) * dynamic_temp_factor * 2 / minutes_between
+    dynamic_factor = (second_reading.raw_tempf - first_reading.raw_tempf) > 0 ? dynamic_up_temp_factor : dynamic_down_temp_factor
+
+    adjustment_delta = (second_reading.raw_tempf - first_reading.raw_tempf) * dynamic_factor * 2 / minutes_between
     adjustment_delta
   end
 end

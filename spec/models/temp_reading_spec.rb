@@ -14,6 +14,8 @@ RSpec.describe TempReading, type: :model do
       static_temp_factor: 1.15,
       static_temp_offset: 75,
       dynamic_temp_factor: 5,
+      dynamic_down_temp_factor: 5,
+      dynamic_up_temp_factor: 0,
       max_rate_adjustment_delta: 100
     )
   end
@@ -29,7 +31,10 @@ RSpec.describe TempReading, type: :model do
     end
 
     context 'when dynamic_temp_factor is zero' do
-      before { settings.update!(dynamic_temp_factor: 0 ) } # keep these focused mainly on static_temp_factor and static_temp_offset
+      before do
+        # keep these focused mainly on static_temp_factor and static_temp_offset
+        settings.update!(dynamic_up_temp_factor: 0, dynamic_down_temp_factor: 0)
+      end
 
       it 'calculates tempf readings which are are higher and further apart when static_temp_factor is higher' do
         temp_a.update!(raw_tempf: 200)
@@ -49,8 +54,6 @@ RSpec.describe TempReading, type: :model do
       end
 
       it 'calculates tempf readings that are higher (but not further apart) when static_temp_offset is higher' do
-        settings.update!(dynamic_temp_factor: 0) # keep this test focused mainly on static_temp_factor
-
         temp_a.update!(raw_tempf: 200)
         temp_b.update!(raw_tempf: 205)
 
@@ -66,27 +69,67 @@ RSpec.describe TempReading, type: :model do
       end
     end
 
-    context 'when dynamic_temp_factor is non-zero' do
-      before { settings.update!(dynamic_temp_factor: 5 ) }
+    context 'when dynamic_up_temp_factor is non-zero' do
+      before do
+        settings.update!(dynamic_up_temp_factor: 5)
+        settings.update!(dynamic_down_temp_factor: 5) # not important for this spec
+      end
+
+      context 'when temperatures are going up at a small, steady rate' do
+        before do
+          temp_a.update!(raw_tempf: 250) # small rate - a 2 degree difference
+          temp_b.update!(raw_tempf: 252)
+          temp_c.update!(raw_tempf: 254)
+          temp_d.update!(raw_tempf: 256)
+        end
+
+        it 'calculates tempf to be higher than surface_tempf by a steady difference' do
+          TempReading.all.each(&:derive_temps!)
+
+          # the first two don't get this setting applied. Logic looks at 3 records.
+          expect(temp_a.reload.tempf).to eq(362.5)
+          expect(temp_a.reload.surface_tempf).to eq(362.5) # So surface_tempf is the same as (internal) tempf
+
+          expect(temp_b.reload.tempf).to         be_within(0.00001).of(364.8)
+          expect(temp_b.reload.surface_tempf).to be_within(0.00001).of(364.8) # So surface_tempf is the same as (internal) tempf
+
+          expect(temp_c.reload.tempf).to         be_within(0.00001).of(387.1)
+          expect(temp_c.reload.surface_tempf).to be_within(0.00001).of(367.1)
+
+          expect(temp_d.reload.tempf).to         be_within(0.00001).of(389.4)
+          expect(temp_d.reload.surface_tempf).to be_within(0.00001).of(369.4)
+
+
+          expect(temp_c.surface_tempf - temp_c.tempf).to eq(-20) # a steady difference
+          expect(temp_d.surface_tempf - temp_d.tempf).to eq(-20)
+        end
+      end
+    end
+
+    context 'when dynamic factors are typically configured (up factor = 0, down factor = 5)' do
+      before do
+        settings.update!(dynamic_up_temp_factor: 0)
+        settings.update!(dynamic_down_temp_factor: 5)
+      end
 
       context 'when temperatures are going up at various rates' do
-        it "doesn't calculate tempf any differently (compared to dynamic_temp_factor being zero)" do
+        it "calculation of tempf isn't affected by dynamic_down_temp_factor (zero vs nonzero)" do
           temp_a.update!(raw_tempf: 200)
           temp_b.update!(raw_tempf: 210)
           temp_c.update!(raw_tempf: 250)
           temp_d.update!(raw_tempf: 290)
           settings.update!(static_temp_factor: 1.15)
 
-          settings.update!(dynamic_temp_factor: 5)
+          settings.update!(dynamic_down_temp_factor: 5)
           TempReading.all.each(&:derive_temps!)
           expect(temp_a.reload.tempf).to eq(305.0)
           expect(temp_b.reload.tempf).to eq(316.5)
           expect(temp_c.reload.tempf).to eq(362.5)
           expect(temp_d.reload.tempf).to eq(408.5)
 
-          settings.update!(dynamic_temp_factor: 0)
+          settings.update!(dynamic_down_temp_factor: 0)
           TempReading.all.each(&:derive_temps!)
-          expect(temp_a.reload.tempf).to eq(305.0) # note, same as above. dynamic_temp_factor being zero didn't make a difference
+          expect(temp_a.reload.tempf).to eq(305.0) # note, same as above. dynamic_down_temp_factor being zero didn't make a difference
           expect(temp_b.reload.tempf).to eq(316.5)
           expect(temp_c.reload.tempf).to eq(362.5)
           expect(temp_d.reload.tempf).to eq(408.5)
@@ -217,7 +260,7 @@ RSpec.describe TempReading, type: :model do
           temp_c.update!(raw_tempf: 255)
         end
 
-        it "doesn't rate-adjust at all when the temperature swings up (because ONLY_RATE_ADJUST_DOWN is true)" do
+        it "doesn't rate-adjust at all when the temperature swings up (because only the 'down' factor is non-zero)" do
           TempReading.all.each(&:derive_temps!)
 
           expect(temp_c.reload.surface_tempf - temp_c.tempf).to eq(0)
@@ -231,7 +274,7 @@ RSpec.describe TempReading, type: :model do
           temp_c.update!(raw_tempf: 245)
         end
 
-        it "doesn't rate-adjust the last reading upwards (because ONLY_RATE_ADJUST_DOWN is true)" do
+        it "doesn't rate-adjust the last reading upwards (because only the 'down' factor is non-zero)" do
           TempReading.all.each(&:derive_temps!)
 
           expect(temp_c.reload.tempf).to be <= temp_c.surface_tempf
