@@ -13,7 +13,6 @@ RSpec.describe TempReading, type: :model do
     Settings.create!(
       static_temp_factor: 1.15,
       static_temp_offset: 75,
-      dynamic_temp_factor: 5,
       dynamic_down_temp_factor: 5,
       dynamic_up_temp_factor: 0,
       max_rate_adjustment_delta: 100
@@ -30,7 +29,7 @@ RSpec.describe TempReading, type: :model do
       expect(temp_b.reload.tempf).to be_positive
     end
 
-    context 'when dynamic_temp_factor is zero' do
+    context 'when dynamic temp factors are zero' do
       before do
         # keep these focused mainly on static_temp_factor and static_temp_offset
         settings.update!(dynamic_up_temp_factor: 0, dynamic_down_temp_factor: 0)
